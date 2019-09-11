@@ -91,10 +91,21 @@ class User extends CI_Model
      * @method:signin()
      * @return :boolean or data
      */
-    public function signin($userData, $id)
+    public function signin($userData, $users)
+    {
+        if ($users['password'] == md5($userData['password']))
+            return true;
+        else  return false;
+    }
+    /**
+     * @param:$userData,$id
+     * @method:signin()
+     * @return :boolean or data
+     */
+    public function validate($id)
     {
         $users = $this->getRows($id);
-        if ($users['password'] == md5($userData['password']))
+        if ($users['acc_status'] == TRUE)
             return $users;
         else  return false;
     }
@@ -108,8 +119,9 @@ class User extends CI_Model
     {
         $userData['password'] = md5($userData['password']);
         $insert = $this->insert($userData);
-        if ($insert) return true;
-        else return false;
+        if ($insert) {
+            return $this->isEmailPresent($userData['email']);
+        } else return false;
     }
 
     /**
@@ -136,7 +148,17 @@ class User extends CI_Model
         if (!empty($users)) return $users;
         else return false;
     }
-
+    /**
+     * @param:$userData,$id
+     * @method:updateUser()
+     * @return :boolean
+     */
+    public function validateUser($id)
+    {
+        $update = $this->update(array('acc_status' => TRUE), $id);
+        if ($update) return true;
+        else return false;
+    }
     /**
      * @param:$id
      * @method:deleteUser()
@@ -201,6 +223,15 @@ class User extends CI_Model
             'yathink3@gmail.com',
             'for recovering email',
             '<h1>please click below link to reset your password</h1><p>' . $message . '</p>'
+        );
+    }
+    function validateMail($message)
+    {
+        $sender = new SendMail();
+        return $sender->sendEmail(
+            'yathink3@gmail.com',
+            'for validating email',
+            '<h1>please click below link to validating your account</h1><p>' . $message . '</p>'
         );
     }
 }

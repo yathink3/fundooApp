@@ -49,16 +49,23 @@ class Api extends  REST_Controller
         $userData['password'] = $this->post('password');
         if (!empty($userData['email']) && !empty($userData['password'])) {
             if ($id = $this->user->isEmailPresent($userData['email'])) {
-                if ($user = $this->user->signin($userData, $id)) {
-                    $this->response([
-                        'status' => TRUE,
-                        'message' => 'User login successful.',
-                        'data' => $user
-                    ], REST_Controller::HTTP_OK);
+                if ($user = $this->user->validate($id)) {
+                    if ($this->user->signin($userData, $user)) {
+                        $this->response([
+                            'status' => TRUE,
+                            'message' => 'User login successful.',
+                            'data' => $user
+                        ], REST_Controller::HTTP_OK);
+                    } else {
+                        $this->response([
+                            'status' => FALSE,
+                            'message' => "password is mismatch"
+                        ], REST_Controller::HTTP_BAD_REQUEST);
+                    }
                 } else {
                     $this->response([
                         'status' => FALSE,
-                        'message' => "password is mismatch"
+                        'message' => "validation not at done"
                     ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             } else {
@@ -91,12 +98,19 @@ class Api extends  REST_Controller
         if (!empty($userData['firstname']) && !empty($userData['lastname']) && !empty($userData['email']) && !empty($userData['password'])) {
             if (!$this->user->isEmailPresent($userData['email'])) {
                 //check if the user data inserted
-                if ($this->user->signup($userData)) {
-                    //set the response and exit
-                    $this->response([
-                        'status' => TRUE,
-                        'message' => 'User account has been created successfully.'
-                    ], REST_Controller::HTTP_OK);
+                if ($id = $this->user->signup($userData)) {
+                    if ($this->user->validateMail('http://localhost:4200/validate/?token=' . $this->user->generateToken($id))) {
+                        //set the response and exit
+                        $this->response([
+                            'status' => TRUE,
+                            'message' => 'User account has been created token generated && email sent successfully.'
+                        ], REST_Controller::HTTP_OK);
+                    } else {
+                        $this->response([
+                            'status' => FALSE,
+                            'message' => "User account has been created token generated && email not sent"
+                        ], REST_Controller::HTTP_BAD_REQUEST);
+                    }
                 } else {
                     //set the response and exit
                     $this->response([
@@ -182,6 +196,46 @@ class Api extends  REST_Controller
                     $this->response([
                         'status' => FALSE,
                         'message' => "Some problems occurred, please try again."
+                    ], REST_Controller::HTTP_BAD_REQUEST);
+                }
+            } else {
+                //set the response and exit
+                $this->response([
+                    'status' => FALSE,
+                    'message' => 'unknown person'
+                ], REST_Controller::HTTP_NOT_FOUND);
+            }
+        } else {
+            $this->response([
+                'status' => FALSE,
+                'message' => 'unknown person'
+            ], REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
+
+    /**
+     * @param :$token
+     * @method:reset_post()
+     * @return :response 
+     */
+    public function validation_get($token)
+    {
+        if ($id = $this->user->checkToken($token)) {
+            //check if the user data exists
+            if ($this->user->getUsers($id)) {
+                //check if the user data updated
+                if ($this->user->validateUser($id)) {
+                    //set the response and exit
+                    $this->response([
+                        'status' => TRUE,
+                        'message' => 'User validation successful'
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    //set the response and exit
+                    $this->response([
+                        'status' => FALSE,
+                        'message' => "User validation not success"
                     ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             } else {

@@ -9,9 +9,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { RegisterationComponent } from './components/registeration/registeration.component';
 import { LoginComponent } from './components/login/login.component';
-import { UserComponent } from './components/user/user.component';
 import { ForgotComponent } from './components/forgot/forgot.component';
 import { ResetComponent } from './components/reset/reset.component';
+import { ValidateComponent } from './components/validate/validate.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+
+import { LayoutModule } from '@angular/cdk/layout';
 
 
 @NgModule({
@@ -19,9 +22,10 @@ import { ResetComponent } from './components/reset/reset.component';
     AppComponent,
     RegisterationComponent,
     LoginComponent,
-    UserComponent,
     ForgotComponent,
     ResetComponent,
+    ValidateComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,7 +34,7 @@ import { ResetComponent } from './components/reset/reset.component';
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

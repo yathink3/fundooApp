@@ -20,4 +20,7 @@ export class UsersService {
   resetPassword(token, data) {
     return this.http.post(this.URL + 'forgotPassword/' + token, data);
   }
+  validation(token) {
+    return this.http.get(this.URL + 'validateaccount/' + token);
+  }
 }

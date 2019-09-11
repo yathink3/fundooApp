@@ -57,3 +57,4 @@ $route['user/login'] = 'api/login';
 $route['user/registration'] = 'api/registration';
 $route['user/forgot'] = 'api/forgot';
 $route['user/forgotPassword/(:any)'] = 'api/reset/$1';
+$route['user/validateaccount/(:any)'] = 'api/validation/$1';
