@@ -1,0 +1,62 @@
+<div class="main-div">
+
+    <mat-card class="example-card">
+        <mat-card-header>
+            <mat-card-title>Sign In</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="loginForm" (ngSubmit)="onFormSubmit(loginForm.value)">
+                <table>
+                    <tr>
+                        <td>
+                            <mat-form-field class="demo-full-width">
+                                <input formControlName="Email" matInput placeholder="Email" id="Email" name="Email">
+                                <mat-hint>use like : demo@demo.com</mat-hint>
+
+                            </mat-form-field>
+                            <mat-error>
+                                <span *ngIf="!loginForm.get('Email').valid && loginForm.get('Email').touched">Enter
+                                    proper
+                                    Email !!!</span>
+                            </mat-error>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <mat-form-field class="demo-full-width">
+                                <input formControlName="Password" [type]="showPassword.checked ? 'text' : 'password'"
+                                    matInput placeholder="Password" id="Password" name="Password">
+
+                            </mat-form-field>
+
+                            <mat-error>
+                                <span
+                                    *ngIf="!loginForm.get('Password').valid && loginForm.get('Password').touched">Enter
+                                    proper
+                                    password !!!</span>
+                            </mat-error>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <mat-checkbox color="primary" #showPassword>Show password</mat-checkbox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="content-center">
+                            <button mat-raised-button color="primary" [disabled]="!loginForm.valid ">Login</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a routerLink="/forgot">Forgot password?</a>
+                            <p>Not a member?
+                                <a routerLink="/registration">Register</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
