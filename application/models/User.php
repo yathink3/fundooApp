@@ -20,11 +20,14 @@ class User extends CI_Model
     function getRows($id = "")
     {
         if (!empty($id)) {
-            $query = $this->db->get_where('user', array('id' => $id));
-            return $query->row_array();
+
+            $stmt = $this->db->conn_id->prepare('SELECT * FROM user WHERE id=:id');
+            $stmt->execute(['id' => $id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         } else {
-            $query = $this->db->get('user');
-            return $query->result_array();
+            $stmt = $this->db->conn_id->prepare('SELECT * FROM user');
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     }
 
@@ -41,9 +44,11 @@ class User extends CI_Model
         if (!array_key_exists('modified', $data)) {
             $data['modified'] = date("Y-m-d H:i:s");
         }
-        $insert = $this->db->insert('user', $data);
+        $query = 'INSERT INTO user (firstname,lastname,email,password,created,modified) VALUES (:firstname,:lastname,:email,:password,:created,:modified)';
+        $insert = $this->db->conn_id->prepare($query)->execute($data);
+        // $insert = $this->db->insert('user', $data);
         if ($insert) {
-            return $this->db->insert_id();
+            return true;
         } else {
             return false;
         }
@@ -58,7 +63,9 @@ class User extends CI_Model
     {
         if (!empty($data) && !empty($id)) {
             $data['modified'] = date("Y-m-d H:i:s");
-            $update = $this->db->update('user', $data, array('id' => $id));
+            $query = 'UPDATE user SET  firstname=:firstname,lastname=:lastname,email=:email,password=:password,created=:created,modified=:modified WHERE id=:id"';
+            $update = $this->db->conn_id->prepare($query)->execute($data);
+            // $update = $this->db->update('user', $data, array('id' => $id));
             if ($update)
                 return true;
             else return  false;
@@ -74,7 +81,9 @@ class User extends CI_Model
      */
     public function delete($id)
     {
-        $delete = $this->db->delete('user', array('id' => $id));
+        $query = 'DELETE FROM user WHERE id=:id"';
+        $delete = $this->db->conn_id->prepare($query)->execute(['id' => $id]);
+        // $delete = $this->db->delete('user', array('id' => $id));
         if ($delete)
             return true;
         else return false;
