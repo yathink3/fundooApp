@@ -20,11 +20,7 @@ class Userapi extends  REST_Controller
     {
 
         parent::__construct();
-
-        //load user models
-        $this->load->model('user');
-        // $this->service = new Service();
-
+        $this->service = new Service();
     }
 
     /**

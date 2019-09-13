@@ -7,6 +7,7 @@ class Service extends CI_Controller
         parent::__construct();
         $this->load->model('user');
         $this->jwt_key = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHR';
+        $this->load->driver('cache', array('adapter' => 'redis', 'backup' => 'file'));
     }
     /**
      * @param:$userData,$id
@@ -15,9 +16,10 @@ class Service extends CI_Controller
      */
     public function signin($userData, $users)
     {
-        if ($users['password'] == md5($userData['password']))
+        if ($users['password'] == md5($userData['password'])) {
+            $this->cache->save($this->generateToken($users['id']), $users);
             return true;
-        else  return false;
+        } else  return false;
     }
     /**
      * @param:$userData,$id
@@ -26,7 +28,7 @@ class Service extends CI_Controller
      */
     public function validate($id)
     {
-        $users = $this->model->getRows($id);
+        $users = $this->getRows($id);
         if ($users['acc_status'] == TRUE)
             return $users;
         else  return false;
@@ -42,7 +44,7 @@ class Service extends CI_Controller
         $userData['password'] = md5($userData['password']);
         $insert = $this->insert($userData);
         if ($insert) {
-            return $this->model->isEmailPresent($userData['email']);
+            return $this->isEmailPresent($userData['email']);
         } else return false;
     }
 
@@ -54,7 +56,7 @@ class Service extends CI_Controller
     public function updateUser($userData, $id)
     {
         $userData['password'] = md5($userData['password']);
-        $update = $this->model->update($userData, $id);
+        $update = $this->update($userData, $id);
         if ($update) return true;
         else return false;
     }
@@ -66,7 +68,7 @@ class Service extends CI_Controller
      */
     public function getUsers($id)
     {
-        $users = $this->model->getRows($id);
+        $users = $this->getRows($id);
         if (!empty($users)) return $users;
         else return false;
     }
@@ -77,8 +79,7 @@ class Service extends CI_Controller
      */
     public function validateUser($id)
     {
-        $update = $this->model->update(array('acc_status' => TRUE), $id);
-        if ($update) return true;
+        if ($update = $this->update(array('acc_status' => TRUE), $id)) return true;
         else return false;
     }
     /**
@@ -88,9 +89,7 @@ class Service extends CI_Controller
      */
     public function deleteUser($id)
     {
-        $delete = $this->model->delete($id);
-        if ($delete)
-            return true;
+        if ($delete = $this->delete($id)) return true;
         else return false;
     }
     /**
@@ -100,10 +99,8 @@ class Service extends CI_Controller
      */
     public function isEmailPresent($email, $id = 0)
     {
-        $users = $this->model->getRows();
-        foreach ($users as $user) {
-            if ($user['email'] == $email && $user['id'] != $id)
-                return $user['id'];
+        foreach ($users = $this->getRows() as $user) {
+            if ($user['email'] == $email && $user['id'] != $id)   return $user['id'];
         }
         return false;
     }
