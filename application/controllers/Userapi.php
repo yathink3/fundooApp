@@ -14,7 +14,7 @@ require APPPATH . 'services/Service.php';
 /**
  * class api which extends from REST_Controller
  */
-class Api extends  REST_Controller
+class Userapi extends  REST_Controller
 {
     public function __construct()
     {

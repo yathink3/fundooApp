@@ -48,7 +48,6 @@ export class DashboardComponent implements OnInit {
 
   }
   signOut() {
-
     const data = JSON.parse(localStorage.getItem('userData'));
     console.log(data.firstname + ' signout successfully');
     this.snackBar.open(data.firstname + ' signed out successfully', 'ok', {

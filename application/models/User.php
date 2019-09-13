@@ -21,7 +21,6 @@ class User extends CI_Model
     function getRows($id = "")
     {
         if (!empty($id)) {
-
             $stmt = $this->db->conn_id->prepare('SELECT * FROM user WHERE id=:id');
             $stmt->execute(['id' => $id]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -39,20 +38,11 @@ class User extends CI_Model
      */
     public function insert($data)
     {
-        if (!array_key_exists('created', $data)) {
-            $data['created'] = date("Y-m-d H:i:s");
-        }
-        if (!array_key_exists('modified', $data)) {
-            $data['modified'] = date("Y-m-d H:i:s");
-        }
+        if (!array_key_exists('created', $data))   $data['created'] = date("Y-m-d H:i:s");
+        if (!array_key_exists('modified', $data))   $data['modified'] = date("Y-m-d H:i:s");
         $query = 'INSERT INTO user (firstname,lastname,email,password,created,modified) VALUES (:firstname,:lastname,:email,:password,:created,:modified)';
-        $insert = $this->db->conn_id->prepare($query)->execute($data);
-        // $insert = $this->db->insert('user', $data);
-        if ($insert) {
-            return true;
-        } else {
-            return false;
-        }
+        if ($this->db->conn_id->prepare($query)->execute($data)) return true;
+        else  return false;
     }
 
     /**
@@ -65,14 +55,9 @@ class User extends CI_Model
         if (!empty($data) && !empty($id)) {
             $data['modified'] = date("Y-m-d H:i:s");
             $query = 'UPDATE user SET  firstname=:firstname,lastname=:lastname,email=:email,password=:password,created=:created,modified=:modified WHERE id=:id"';
-            $update = $this->db->conn_id->prepare($query)->execute($data);
-            // $update = $this->db->update('user', $data, array('id' => $id));
-            if ($update)
-                return true;
+            if ($this->db->conn_id->prepare($query)->execute($data))   return true;
             else return  false;
-        } else {
-            return false;
-        }
+        } else  return false;
     }
 
     /**
@@ -83,10 +68,7 @@ class User extends CI_Model
     public function delete($id)
     {
         $query = 'DELETE FROM user WHERE id=:id"';
-        $delete = $this->db->conn_id->prepare($query)->execute(['id' => $id]);
-        // $delete = $this->db->delete('user', array('id' => $id));
-        if ($delete)
-            return true;
+        if ($this->db->conn_id->prepare($query)->execute(['id' => $id]))   return true;
         else return false;
     }
 
@@ -103,15 +85,8 @@ class User extends CI_Model
      */
     public function signin($userData, $users)
     {
-
         if ($users['password'] == md5($userData['password'])) {
-            // if ($this->cache->redis->is_supported() || $this->cache->file->is_supported()) {
-            //     if ($cached = $this->cache->get('user_data')) {
-            //         $data3 = $cached;
-            //     } else {
             $this->cache->save($this->generateToken($users['id']), $users);
-            //     }
-            // }
             return true;
         } else  return false;
     }
@@ -173,8 +148,7 @@ class User extends CI_Model
      */
     public function validateUser($id)
     {
-        $update = $this->update(array('acc_status' => TRUE), $id);
-        if ($update) return true;
+        if ($update = $this->update(array('acc_status' => TRUE), $id)) return true;
         else return false;
     }
     /**
@@ -184,9 +158,7 @@ class User extends CI_Model
      */
     public function deleteUser($id)
     {
-        $delete = $this->delete($id);
-        if ($delete)
-            return true;
+        if ($delete = $this->delete($id)) return true;
         else return false;
     }
     /**
@@ -196,10 +168,8 @@ class User extends CI_Model
      */
     public function isEmailPresent($email, $id = 0)
     {
-        $users = $this->getRows();
-        foreach ($users as $user) {
-            if ($user['email'] == $email && $user['id'] != $id)
-                return $user['id'];
+        foreach ($users = $this->getRows() as $user) {
+            if ($user['email'] == $email && $user['id'] != $id)   return $user['id'];
         }
         return false;
     }

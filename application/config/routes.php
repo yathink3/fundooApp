@@ -52,9 +52,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 
-$route['default_controller'] = 'api';
-$route['user/login'] = 'api/login';
-$route['user/registration'] = 'api/registration';
-$route['user/forgot'] = 'api/forgot';
-$route['user/forgotPassword/(:any)'] = 'api/reset/$1';
-$route['user/validateaccount/(:any)'] = 'api/validation/$1';
+$route['default_controller'] = 'userapi';
+$route['user/login'] = 'userapi/login';
+$route['user/registration'] = 'userapi/registration';
+$route['user/forgot'] = 'userapi/forgot';
+$route['user/forgotPassword/(:any)'] = 'userapi/reset/$1';
+$route['user/validateaccount/(:any)'] = 'userapi/validation/$1';
