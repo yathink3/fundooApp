@@ -24,6 +24,7 @@ class Api extends  REST_Controller
         //load user models
         $this->load->model('user');
         // $this->service = new Service();
+
     }
 
     /**
@@ -44,6 +45,7 @@ class Api extends  REST_Controller
      */
     public function login_post()
     {
+
         $userData = array();
         $userData['email'] = $this->post('email');
         $userData['password'] = $this->post('password');

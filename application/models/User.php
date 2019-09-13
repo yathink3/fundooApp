@@ -10,6 +10,7 @@ class User extends CI_Model
         //load database library
         $this->load->database();
         $this->jwt_key = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHR';
+        $this->load->driver('cache', array('adapter' => 'redis', 'backup' => 'file'));
     }
 
     /**
@@ -102,9 +103,17 @@ class User extends CI_Model
      */
     public function signin($userData, $users)
     {
-        if ($users['password'] == md5($userData['password']))
+
+        if ($users['password'] == md5($userData['password'])) {
+            // if ($this->cache->redis->is_supported() || $this->cache->file->is_supported()) {
+            //     if ($cached = $this->cache->get('user_data')) {
+            //         $data3 = $cached;
+            //     } else {
+            $this->cache->save($this->generateToken($users['id']), $users);
+            //     }
+            // }
             return true;
-        else  return false;
+        } else  return false;
     }
     /**
      * @param:$userData,$id

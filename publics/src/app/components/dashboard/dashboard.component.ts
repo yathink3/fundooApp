@@ -1,13 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { map, shareReplay } from 'rxjs/operators';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+
+
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
@@ -33,5 +37,25 @@ export class DashboardComponent {
       map(result => result.matches),
       shareReplay()
     );
-  constructor(private breakpointObserver: BreakpointObserver) { }
+  constructor(private breakpointObserver: BreakpointObserver, private snackBar: MatSnackBar, private route: Router) { }
+  ngOnInit() {
+    if (!localStorage.getItem('userData')) {
+      this.snackBar.open('no one signed in', 'ok', {
+        duration: 2000,
+      });
+      this.route.navigate(['/']);
+    }
+
+  }
+  signOut() {
+
+    const data = JSON.parse(localStorage.getItem('userData'));
+    console.log(data.firstname + ' signout successfully');
+    this.snackBar.open(data.firstname + ' signed out successfully', 'ok', {
+      duration: 2000,
+    });
+    localStorage.removeItem('userData');
+    this.route.navigate(['/']);
+  }
+
 }

@@ -35,6 +35,8 @@ export class LoginComponent {
         this.snackBar.open(result.message, 'ok', {
           duration: 2000,
         });
+        localStorage.setItem('userData', JSON.stringify(result.data));
+        console.log(result.data);
         this.route.navigate(['/user']);
       },
         error => {
