@@ -42,8 +42,10 @@ export class RegisterationComponent implements OnInit {
     console.log(data);
     this.svc.register(data)
       .subscribe(result => {
-        console.log(result.message, ':', result);
-        this.snackBar.open(result.message, 'ok', {
+        const temp = JSON.stringify(result);
+        const results = JSON.parse(temp);
+        console.log(results.message, ':', results);
+        this.snackBar.open(results.message, 'ok', {
           duration: 2000,
         });
         this.route.navigate(['/login']);

@@ -30,8 +30,11 @@ export class ForgotComponent implements OnInit {
     console.log(data);
     this.svc.forgotPassword(data)
       .subscribe(result => {
-        console.log(result.message, ':', result);
-        this.snackBar.open(result.message, 'ok', {
+        console.log(result);
+        const temp = JSON.stringify(result);
+        const results = JSON.parse(temp);
+        console.log(results.message, ':', results);
+        this.snackBar.open(results.message, 'ok', {
           duration: 2000,
         });
         this.route.navigate(['/']);

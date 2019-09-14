@@ -16,8 +16,10 @@ export class ValidateComponent implements OnInit {
     const token = this.activatedRoute.snapshot.queryParamMap.get('token');
     this.svc.validation(token)
       .subscribe(result => {
-        console.log(result.message, ':', result);
-        this.snackBar.open(result.message, 'ok', {
+        const temp = JSON.stringify(result);
+        const results = JSON.parse(temp);
+        console.log(results.message, ':', results);
+        this.snackBar.open(results.message, 'ok', {
           duration: 2000,
         });
         this.route.navigate(['/']);

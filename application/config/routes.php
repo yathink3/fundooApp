@@ -52,9 +52,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 
-$route['default_controller'] = 'userapi';
-$route['user/login'] = 'userapi/login';
-$route['user/registration'] = 'userapi/registration';
-$route['user/forgot'] = 'userapi/forgot';
-$route['user/forgotPassword/(:any)'] = 'userapi/reset/$1';
-$route['user/validateaccount/(:any)'] = 'userapi/validation/$1';
+
+$route['default_controller'] = 'FundooAccounts';
+$route['user/login'] = 'FundooAccounts/login';
+$route['user/registration'] = 'FundooAccounts/registration';
+$route['user/validateaccount/(:any)'] = 'FundooAccounts/validationAccount/$1';
+$route['user/forgot'] = 'FundooAccounts/forgot';
+$route['user/forgotPassword/(:any)'] = 'FundooAccounts/reset/$1';

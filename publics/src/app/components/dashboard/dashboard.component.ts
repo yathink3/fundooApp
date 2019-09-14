@@ -10,8 +10,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  constructor(private breakpointObserver: BreakpointObserver, private snackBar: MatSnackBar, private route: Router) { }
 
-
+  data = JSON.parse(localStorage.getItem('userData'));
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
@@ -37,20 +38,18 @@ export class DashboardComponent implements OnInit {
       map(result => result.matches),
       shareReplay()
     );
-  constructor(private breakpointObserver: BreakpointObserver, private snackBar: MatSnackBar, private route: Router) { }
+  username = this.data.firstname;
   ngOnInit() {
-    if (!localStorage.getItem('userData')) {
+    if (!this.data) {
       this.snackBar.open('no one signed in', 'ok', {
         duration: 2000,
       });
       this.route.navigate(['/']);
     }
-
   }
   signOut() {
-    const data = JSON.parse(localStorage.getItem('userData'));
-    console.log(data.firstname + ' signout successfully');
-    this.snackBar.open(data.firstname + ' signed out successfully', 'ok', {
+    console.log(this.data.firstname + ' signout successfully');
+    this.snackBar.open(this.data.firstname + ' signed out successfully', 'ok', {
       duration: 2000,
     });
     localStorage.removeItem('userData');
