@@ -137,7 +137,7 @@ class FundooAccountService extends CI_Controller
     public function forgotPassword($userData)
     {
         if ($result = $this->isEmailPresent($userData['email'])) {
-            if ($this->sendMail('for recovering email', 'please click below link to reset your password', 'http://localhost:4200/resetPassword/?token= ' . $this->generateToken($result['id'])))
+            if ($this->sendMail('for recovering email', 'please click below link to reset your password', 'http://localhost:4200/resetPassword/?token= ' . $this->jwtToken($result['id'], true)))
                 return ['status' => 200, "message" => "token generated && email sent successfully"];
             else return ['status' => 503, "message" => "token generated && email not sent"];
         } else return ['status' => 404, "message" => "wrong email address"];
