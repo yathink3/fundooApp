@@ -29,6 +29,8 @@ export class LoginComponent {
       password: this.loginForm.value.Password
     };
     console.log(data);
+    // tslint:disable-next-line: no-debugger
+    debugger;
     this.svc.login(data)
       .subscribe(result => {
         const temp = JSON.stringify(result);
@@ -38,13 +40,14 @@ export class LoginComponent {
           duration: 2000,
         });
         const userdata = {
+          id: results.data.id,
           firstname: results.data.firstname,
           lastname: results.data.firstname,
           email: results.data.email
         };
         localStorage.setItem('userData', JSON.stringify(userdata));
         console.log(results.data);
-        this.route.navigate(['/user']);
+        this.route.navigate(['/dash']);
       },
         error => {
           console.log(error.error.message, ':', error.error);

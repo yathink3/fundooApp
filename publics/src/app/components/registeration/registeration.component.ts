@@ -40,6 +40,8 @@ export class RegisterationComponent implements OnInit {
       password: this.regiForm.value.Password
     };
     console.log(data);
+    // tslint:disable-next-line:no-debugger
+    debugger;
     this.svc.register(data)
       .subscribe(result => {
         const temp = JSON.stringify(result);

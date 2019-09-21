@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { map, shareReplay } from 'rxjs/operators';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
@@ -9,36 +8,40 @@ import { Router } from '@angular/router';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
-  constructor(private breakpointObserver: BreakpointObserver, private snackBar: MatSnackBar, private route: Router) { }
-
+export class DashboardComponent implements OnDestroy, OnInit {
+  mobileQuery: MediaQueryList;
+  show: boolean = true;
+  searchtouch = false;
+  searched = '';
+  private mobileQueryListener: () => void;
   data = JSON.parse(localStorage.getItem('userData'));
-  /** Based on the screen size, switch from standard to one column per row */
-  cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(({ matches }) => {
-      if (matches) {
-        return [
-          { title: 'Card 1', cols: 1, rows: 1 },
-          { title: 'Card 2', cols: 1, rows: 1 },
-          { title: 'Card 3', cols: 1, rows: 1 },
-          { title: 'Card 4', cols: 1, rows: 1 }
-        ];
-      }
+  username: string;
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private snackBar: MatSnackBar, private route: Router) {
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this.mobileQueryListener = () => changeDetectorRef.detectChanges();
+    // tslint:disable-next-line: deprecation
+    this.mobileQuery.addListener(this.mobileQueryListener);
+    this.username = this.data ? this.data.firstname : '';
+  }
 
-      return [
-        { title: 'Card 1', cols: 2, rows: 1 },
-        { title: 'Card 2', cols: 1, rows: 1 },
-        { title: 'Card 3', cols: 1, rows: 2 },
-        { title: 'Card 4', cols: 1, rows: 1 }
-      ];
-    })
-  );
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(
-      map(result => result.matches),
-      shareReplay()
-    );
-  username = this.data.firstname;
+  medri() {
+    this.searchtouch = true;
+  }
+
+  clear() {
+    this.searched = '';
+    this.searchtouch = false;
+  }
+  view_mode() {
+    this.show = this.show ? false : true;
+  }
+  ngOnDestroy(): void {
+    // tslint:disable-next-line: deprecation
+    this.mobileQuery.removeListener(this.mobileQueryListener);
+  }
+  crossMark() {
+    this.searchtouch = true;
+  }
   ngOnInit() {
     if (!this.data) {
       this.snackBar.open('no one signed in', 'ok', {
@@ -57,3 +60,4 @@ export class DashboardComponent implements OnInit {
   }
 
 }
+

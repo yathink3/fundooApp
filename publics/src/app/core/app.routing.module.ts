@@ -7,15 +7,17 @@ import { ForgotComponent } from '../components/forgot/forgot.component';
 import { ResetComponent } from '../components/reset/reset.component';
 import { ValidateComponent } from '../components/validate/validate.component';
 import { DashboardComponent } from '../components/dashboard/dashboard.component';
+import { SidenavComponent } from '../components/sidenav/sidenav.component';
 
 const routes: Routes = [
-  { path: 'user', component: DashboardComponent },
+  { path: 'dash', component: DashboardComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registration', component: RegisterationComponent },
   { path: 'forgot', component: ForgotComponent },
   { path: 'resetPassword', component: ResetComponent },
   { path: 'validate', component: ValidateComponent },
   { path: '', component: LoginComponent },
+  { path: 'temp', component: SidenavComponent }
 
 ];
 @NgModule({

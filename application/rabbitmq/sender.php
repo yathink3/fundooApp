@@ -5,6 +5,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
 require APPPATH . 'rabbitmq/receive.php';
+// include '/var/www/yathin/fundooapp/application/rabbitmq/receive.php';
 class SendMail
 {
     /**
@@ -33,5 +34,6 @@ class SendMail
         if ($sent)
             return true;
         else return false;
+        // return false;
     }
 }

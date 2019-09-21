@@ -5,7 +5,7 @@ import {
   MatToolbarModule, MatMenuModule, MatIconModule, MatProgressSpinnerModule, MatFormFieldModule,
   MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatSelectModule, MatOptionModule,
   MatSlideToggleModule, ErrorStateMatcher, ShowOnDirtyErrorStateMatcher, MatCheckboxModule, MatSnackBarModule, MatGridListModule,
-  MatSidenavModule, MatListModule,
+  MatSidenavModule, MatListModule, MatButtonToggleModule, MatTooltipModule, MatChipsModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
@@ -39,6 +39,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatGridListModule,
     MatSidenavModule,
     MatListModule,
+    MatButtonToggleModule,
+    MatTooltipModule,
+    MatChipsModule
   ],
   exports: [
     CommonModule,
@@ -70,6 +73,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatGridListModule,
     MatSidenavModule,
     MatListModule,
+    MatButtonToggleModule,
+    MatTooltipModule,
+    MatChipsModule
   ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }

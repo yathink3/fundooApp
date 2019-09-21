@@ -20,6 +20,7 @@ class FundooAccountService extends CI_Controller
         parent::__construct();
         //load database library
         $this->load->database();
+        $this->load->library('email');
         $this->load->driver('cache', array('adapter' => 'redis', 'backup' => 'file'));
     }
 
@@ -42,11 +43,11 @@ class FundooAccountService extends CI_Controller
      * @method:sendmail will send email 
      * @return :true or false
      */
-    function sendMail($subject, $hint, $message)
+    function sendMail($tomail, $subject, $hint, $message)
     {
         $body = '<h1>' . $hint . '</h1><p>' . $message . '</p>';
         $sender = new SendMail();
-        return $sender->sendEmail('yathink3@gmail.com', $subject, $body);
+        return $sender->sendEmail($tomail, $subject, $body);
     }
 
 
@@ -96,15 +97,15 @@ class FundooAccountService extends CI_Controller
     public function signup($userData)
     {
         if (!$this->isEmailPresent($userData['email'])) {
+            $userData['password'] = md5($userData['password']);
             if (!array_key_exists('created', $userData))  $userData['created'] = date("Y-m-d H:i:s");
             if (!array_key_exists('modified', $userData))  $userData['modified'] = date("Y-m-d H:i:s");
-            $query = 'INSERT INTO user (firstname,lastname,email,password,created,modified) VALUES (:firstname,:lastname,:email,:password,:created,:modified)';
-            if ($this->db->conn_id->prepare($query)->execute($userData)) {
-                $result = $this->isEmailPresent($userData['email']);
-                if ($this->sendMail('for validating email', 'please click below link to validating your account', 'http://localhost:4200/validate/?token=' . $this->jwtToken($result['id'], true)))
+            if ($this->sendMail($userData['email'], 'for validating email', 'please click below link to validating your account', 'http://localhost:4200/validate/?token=' . $this->jwtToken($userData['email'], true))) {
+                $query = 'INSERT INTO user (firstname,lastname,email,password,created,modified) VALUES (:firstname,:lastname,:email,:password,:created,:modified)';
+                if ($this->db->conn_id->prepare($query)->execute($userData))
                     return ['status' => 200, "message" => "User account has been created token generated && email sent successfully."];
-                else return ['status' => 503, "message" => "User account has been created token generated && email not sent"];
-            } else return ['status' => 404, "message" => "Some problems occurred, please try again."];
+                else return ['status' => 503, "message" => "Some problems occurred, please try again later"];
+            } else return ['status' => 404, "message" => "token generated && email not sent."];
         } else return ['status' => 404, "message" => "email already exist."];
     }
 
@@ -116,12 +117,12 @@ class FundooAccountService extends CI_Controller
      */
     public function validateAccount($token)
     {
-        if ($id = $this->jwtToken($token, false)) {
+        if ($email = $this->jwtToken($token, false)) {
             $data = array();
-            $data['id'] = $id;
+            $data['email'] = $email;
             $data['acc_status'] = TRUE;
             $data['modified'] = date("Y-m-d H:i:s");
-            $query = "UPDATE user SET  modified=:modified,acc_status=:acc_status WHERE id=:id";
+            $query = "UPDATE user SET  modified=:modified,acc_status=:acc_status WHERE email=:email";
             $stmt = $this->db->conn_id->prepare($query);
             if ($stmt->execute($data))  return ['status' => 200, "message" => "User validation successful"];
             else return ['status' => 503, "message" => "User validation not successful"];
@@ -137,7 +138,7 @@ class FundooAccountService extends CI_Controller
     public function forgotPassword($userData)
     {
         if ($result = $this->isEmailPresent($userData['email'])) {
-            if ($this->sendMail('for recovering email', 'please click below link to reset your password', 'http://localhost:4200/resetPassword/?token= ' . $this->jwtToken($result['id'], true)))
+            if ($this->sendMail($result['email'], 'for recovering email', 'please click below link to reset your password', 'http://localhost:4200/resetPassword/?token= ' . $this->jwtToken($result['id'], true)))
                 return ['status' => 200, "message" => "token generated && email sent successfully"];
             else return ['status' => 503, "message" => "token generated && email not sent"];
         } else return ['status' => 404, "message" => "wrong email address"];

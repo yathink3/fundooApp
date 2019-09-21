@@ -1,13 +1,60 @@
-.grid-container {
-  margin: 20px;
+.example-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-.dashboard-card {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.example-is-mobile .example-toolbar {
+  position: fixed;
+  z-index: 2;
+  color: white;
+  border: solid 1px rgba(0, 0, 0, 0.04);
+}
+
+h1.example-app-name {
+  margin-left: 10px;
+}
+
+img.example-app-icon {
+  margin-left: 8px;
+}
+
+.example-sidenav-container {
+  flex: 1;
+}
+
+.example-is-mobile .example-sidenav-container {
+  flex: 1 0 auto;
+}
+
+.searchbar {
+  display: flex;
+  margin-left: 64px;
+  border-radius: 8px;
+  width: 700px;
+  height: 20px;
+  font-size: 16px;
+  line-height: 34px;
+  align-items: center;
+}
+
+.searchbarinput {
+  border: none;
+  outline: none;
+  margin-left: 10px;
+  width: 100%;
+  height: 20px;
+  font-size: 16px;
 }
 
 .more-button {
@@ -16,30 +63,22 @@
   right: 10px;
 }
 
-.dashboard-card-content {
-  text-align: center;
+.extra {
+  width: 19%;
+  display: flex;
+  justify-content: space-evenly;
 }
 
-.sidenav-container {
-  height: 100%;
-}
-
-.sidenav {
-  width: 200px;
-}
-
-.sidenav .mat-toolbar {
-  background: inherit;
-}
-
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.username {
+.usericon {
   position: absolute;
-  top: 9px;
-  right: 55px;
+  right: 10px;
+}
+
+app-note {
+  margin-top: 60px;
+}
+
+.contentsNotes {
+  margin-top: 30px;
+  margin-bottom: 30px;
 }

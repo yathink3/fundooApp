@@ -1,0 +1,71 @@
+<div class="getallnotes">
+    <div *ngFor="let item of items; let i = index" class="divfor">
+        <mat-card class="note" (mouseenter)="item.hover=true" (mouseleave)="item.hover=mouseleave(item.hover)">
+            <div style="display: flex;margin-top: -10px;">
+                <h4 mat-text class="title">{{item.title}}</h4>
+                <div style="margin-right: 10px;width:20px">
+                    <button mat-icon-button matTooltip="pin note" *ngIf="item.hover">
+                        <mat-icon class="icon">person_pin</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <h6 class="contents">{{item.description}}</h6>
+            <div style="margin-left: -58px;margin-top: 10px;" *ngIf="item.reminder">
+                <mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
+                    <mat-chip>{{item.reminder}}
+                        <mat-icon matChipRemove (click)="removereminder()">cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            <div style="width: 100%;height: 23px;margin-left:-9px">
+                <button mat-icon-button matTooltip="reminder note" *ngIf="item.hover" (click)="menuclicked()"
+                    (menuClosed)="item.hover=menuClosed()" [matMenuTriggerFor]="rem" aria-label="Toggle menu">
+                    <mat-icon class="icon">add_alert</mat-icon>
+                </button>
+                <mat-menu #rem="matMenu">
+                    <span style="margin-left:20px">Reminder</span>
+                    <span style="margin-left:100%"></span>
+                    <div mat-menu-item>
+                        <mat-icon>alarm_add</mat-icon>
+                        <mat-form-field class="demo-full-width">
+                            <input matInput [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="tx_date"
+                                autocomplete="off" placeholder="Choose date and time">
+                            <owl-date-time #dt1></owl-date-time>
+                        </mat-form-field>
+                    </div>
+                    <button style="margin-left:185px" mat-button (click)="savereminder()">save</button>
+                </mat-menu>
+                <button mat-icon-button *ngIf="item.hover" matTooltip="colloborate" [matMenuTriggerFor]="add_person"
+                    aria-label="Toggle menu" (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()">
+                    <mat-icon class=" icon">person_add</mat-icon>
+                </button>
+                <mat-menu #add_person="matMenu">
+                    <span style="margin-left:20px">Add Person</span>
+                    <span style="margin-left:100%"></span>
+                    <div mat-menu-item>
+                        <mat-icon>alarm_add</mat-icon>
+                    </div>
+                    <button style="margin-left:185px" mat-button (click)="savepersons()">save</button>
+                </mat-menu>
+                <button mat-icon-button matTooltip="archieve note" *ngIf="item.hover">
+                    <mat-icon class="icon">archive</mat-icon>
+                </button>
+                <button mat-icon-button *ngIf="item.hover" matTooltip="color note" [matMenuTriggerFor]="colr"
+                    (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()" aria-label="Toggle menu">
+                    <mat-icon class="icon">color_lens</mat-icon>
+                </button>
+                <mat-menu #colr="matMenu">
+                    <span style="margin-left:20px">Color</span>
+                    <span style="margin-left:100%"></span>
+                    <div mat-menu-item>
+                    </div>
+                    <button style="margin-left:185px" mat-button (click)="savecolor()">save</button>
+                </mat-menu>
+                <button mat-icon-button matTooltip="add image" *ngIf="item.hover">
+                    <mat-icon class="icon" (click)="file.click()">insert_photo</mat-icon>
+                    <input style="display: none;" type="file" #file (change)="onSelectImage($event, '01')" />
+                </button>
+            </div>
+        </mat-card>
+    </div>
+</div>

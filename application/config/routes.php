@@ -51,11 +51,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 
+$route['default_controller'] = 'Welcome';
 
 
-$route['default_controller'] = 'FundooAccounts';
 $route['user/login'] = 'FundooAccounts/login';
 $route['user/registration'] = 'FundooAccounts/registration';
 $route['user/validateaccount/(:any)'] = 'FundooAccounts/validationAccount/$1';
 $route['user/forgot'] = 'FundooAccounts/forgot';
 $route['user/forgotPassword/(:any)'] = 'FundooAccounts/reset/$1';
+
+
+$route['note/createnote'] = 'FundooNotes/createNote';
+$route['note/getAllNotes/(:any)'] = 'FundooNotes/getAllNotes/$1';
