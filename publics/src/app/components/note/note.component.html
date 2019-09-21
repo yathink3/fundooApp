@@ -27,15 +27,16 @@
             autocomplete="off"></textarea>
 
     </div>
-    <div style="margin-left: -368px;" *ngIf="rem">
+    <div style="margin-right: auto;" *ngIf="rem">
         <mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
-            <mat-chip>{{matchip}}
+            <mat-chip>{{remdate}}
                 <mat-icon matChipRemove (click)="removereminder()">cancel</mat-icon>
             </mat-chip>
         </mat-chip-list>
     </div>
-    <div style="width: 100%;height: 30px;">
-        <button mat-icon-button matTooltip="reminder" [matMenuTriggerFor]="remine" aria-label="Toggle menu">
+    <div style="width: 100%;height: 30px;display: flex;">
+        <button mat-icon-button style="margin-left: -13px;" matTooltip="reminder" [matMenuTriggerFor]="remine"
+            aria-label="Toggle menu">
             <mat-icon class="icon">add_alert</mat-icon>
         </button>
         <mat-menu #remine="matMenu">
@@ -72,6 +73,6 @@
             <mat-icon class="icon" (click)="file.click()">insert_photo</mat-icon>
             <input style="display: none;" type="file" #file (change)="onSelectImage($event, '01')" />
         </button>
-        <button mat-button style="margin-left: 320px;" (click)="closetime()">close</button>
+        <button mat-button style="margin-left: auto;" (click)="closetime()">close</button>
     </div>
 </mat-card>

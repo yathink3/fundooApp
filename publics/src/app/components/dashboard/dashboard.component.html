@@ -16,15 +16,16 @@
         </mat-card>
         <!-- <span class="username"> {{username}}</span> -->
         <div class="extra">
-            <button mat-icon-button class="refresh">
-                <mat-icon>refresh</mat-icon>
-            </button>
+            <div>
+                <button mat-icon-button class="refresh">
+                    <mat-icon>refresh</mat-icon>
+                </button>
 
-            <button mat-icon-button class="viewclass" (click)="view_mode()">
-                <mat-icon *ngIf="show">view_module</mat-icon>
-                <mat-icon *ngIf="!show">view_list</mat-icon>
-            </button>
-
+                <button mat-icon-button class="viewclass" (click)="view_mode()">
+                    <mat-icon *ngIf="show">view_module</mat-icon>
+                    <mat-icon *ngIf="!show">view_list</mat-icon>
+                </button>
+            </div>
             <button mat-icon-button class="usericon" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
                 <mat-icon>account_circle</mat-icon>
             </button>
@@ -52,9 +53,14 @@
         </mat-sidenav>
 
         <mat-sidenav-content class="container">
-            <app-note></app-note>
-            <div class="contentsNotes">
-                <app-get-all-note></app-get-all-note>
+            <div class="createnote">
+                <app-note></app-note>
+            </div>
+            <div class="contentsNotesgrid" *ngIf="show">
+                <app-get-all-note class="gridview"></app-get-all-note>
+            </div>
+            <div class="contentsNoteslist" *ngIf="!show">
+                <app-get-all-note class="listview"></app-get-all-note>
             </div>
         </mat-sidenav-content>
     </mat-sidenav-container>

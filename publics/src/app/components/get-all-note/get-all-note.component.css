@@ -2,7 +2,8 @@
   display: flex;
   margin-top: 10%;
   border-radius: 6px;
-  width: 230px;
+  width: auto;
+  min-width: 190px;
   height: auto;
   font-size: 16px;
   line-height: 25px;
@@ -26,6 +27,7 @@
   border: none;
   min-height: 34px;
   height: auto;
+  width: auto;
   font-size: 14px;
   display: inline-block;
   word-break: break-word;
@@ -53,13 +55,4 @@ textarea {
   resize: none;
   overflow: hidden;
   max-height: 100px;
-}
-
-
-.getallnotes {
-  width: 78vw;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  -webkit-column-break-inside: avoid;
 }

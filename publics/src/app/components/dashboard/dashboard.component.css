@@ -39,9 +39,10 @@ img.example-app-icon {
 
 .searchbar {
   display: flex;
-  margin-left: 64px;
+  margin-left: 30px;
   border-radius: 8px;
-  width: 700px;
+  width: 100%;
+  min-width: 24px;
   height: 20px;
   font-size: 16px;
   line-height: 34px;
@@ -64,21 +65,42 @@ img.example-app-icon {
 }
 
 .extra {
-  width: 19%;
+  width: 100%;
   display: flex;
+  min-width: 115px;
   justify-content: space-evenly;
 }
 
 .usericon {
-  position: absolute;
-  right: 10px;
+  margin-left: auto;
 }
 
-app-note {
+.createnote {
   margin-top: 60px;
+  width: 75%;
 }
 
-.contentsNotes {
+.contentsNotesgrid {
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+.contentsNoteslist {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: 57%;
+}
+
+
+.gridview {
+  width: 78vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  -webkit-column-break-inside: avoid;
+}
+
+.listview {
+  width: 78vw;
+  justify-content: space-around;
 }

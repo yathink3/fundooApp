@@ -15,7 +15,7 @@ export class NoteComponent implements OnInit {
   colorid = 0;
   labelid = 0;
   rem: string = '';
-  matchip: string;
+  remdate: string;
   // tslint:disable-next-line:variable-name
   tx_date: any = 0;
   data = JSON.parse(localStorage.getItem('userData'));
@@ -34,7 +34,7 @@ export class NoteComponent implements OnInit {
     this.rem = this.tx_date;
     console.log(this.rem);
     let data = this.rem.toString();
-    this.matchip = data.slice(0, -31);
+    this.remdate = data.slice(0, -31);
   }
   removereminder() {
     this.rem = '';
@@ -61,7 +61,6 @@ export class NoteComponent implements OnInit {
 
     if (!(/^\s*$/.test(datas.title)) || !(/^\s*$/.test(datas.desc))) {
       console.log(datas);
-
       this.svc.createnote(datas)
         .subscribe(result => {
           const temp = JSON.stringify(result);
@@ -69,7 +68,7 @@ export class NoteComponent implements OnInit {
           console.log(results.message, ':', results);
           // tslint:disable-next-line: no-unused-expression
           GetAllNoteComponent.apply;
-          this.getnotes.ngOnInit();
+          this.getnotes.getAllNotes();
         },
           error => {
             console.log(error.error.message, ':', error.error);
