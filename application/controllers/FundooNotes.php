@@ -37,6 +37,7 @@ class FundooNotes
         $notesData['title'] = $data->title;
         $notesData['desc'] = $data->desc;
         $notesData['rem'] = $data->rem;
+        $notesData['isArchieve'] = $data->isArchieve;
         $notesData['colorid'] = $data->colorid;
         $notesData['labelid'] = $data->labelid;
         $responce = $this->services->createNote($notesData);
@@ -65,15 +66,53 @@ class FundooNotes
      * @method:getOneNotes()
      * @return :response 
      */
-    public function getOneNote($id)
+    public function update($id)
     {
         // $token = isset($_GET['token']) ? $_GET['token'] : die();
         $responce = $this->services->getOneNote($id);
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
-
-
+    public function updateNotecolor()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $notesData = array();
+        $notesData['noteid'] = $data->note_id;
+        $notesData['colorid'] = $data->color_id;
+        $responce = $this->services->updateNotecolor($notesData);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
+    public function updateNoteReminder()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $notesData = array();
+        $notesData['noteid'] = $data->note_id;
+        $notesData['reminder'] = $data->reminder;
+        $responce = $this->services->updateNoteReminder($notesData);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
+    public function  archievenoteSet()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $notesData = array();
+        $notesData['noteid'] = $data->note_id;
+        $notesData['isArchieve'] = $data->isArchieve;
+        $responce = $this->services->archievenoteSet($notesData);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
+    public function addTrashnote()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $notesData = array();
+        $notesData['noteid'] = $data->note_id;
+        $notesData['isTrash'] = $data->isTrash;
+        $responce = $this->services->addTrashnote($notesData);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
     /**
      * @param:$id
      * @method:updateNote()

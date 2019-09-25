@@ -1,6 +1,5 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 @Component({
@@ -10,8 +9,8 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent implements OnDestroy, OnInit {
   mobileQuery: MediaQueryList;
-  show: boolean = true;
-  searchtouch = false;
+  isgrid: boolean = true;
+  trigger = true;
   searched = '';
   private mobileQueryListener: () => void;
   data = JSON.parse(localStorage.getItem('userData'));
@@ -24,23 +23,12 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.username = this.data ? this.data.firstname : '';
   }
 
-  medri() {
-    this.searchtouch = true;
-  }
-
-  clear() {
-    this.searched = '';
-    this.searchtouch = false;
-  }
   view_mode() {
-    this.show = this.show ? false : true;
+    this.isgrid = this.isgrid ? false : true;
   }
   ngOnDestroy(): void {
     // tslint:disable-next-line: deprecation
     this.mobileQuery.removeListener(this.mobileQueryListener);
-  }
-  crossMark() {
-    this.searchtouch = true;
   }
   ngOnInit() {
     if (!this.data) {

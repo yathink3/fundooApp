@@ -1,20 +1,21 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
-    <mat-toolbar class="example-toolbar">
+    <mat-toolbar *ngIf="!mobilesearch" class="example-toolbar">
         <button mat-icon-button (click)="snav.toggle()">
             <mat-icon>menu</mat-icon>
         </button>
-        <img class="example-app-icon" src="../../../assets/images/Google_Keep_icon2.svg">
+        <img *ngIf="!mobileQuery.matches" class="example-app-icon" src="../../../assets/images/Google_Keep_icon2.svg">
         <h1 class="example-app-name">Fundoo</h1>
 
-        <mat-card class="searchbar">
+        <mat-card *ngIf="!mobileQuery.matches" class="searchbar">
             <mat-icon>search</mat-icon>
-            <input class="searchbarinput" [(ngModel)]="searched" (keyup)="medri()" matInput placeholder="Search"
-                autocomplete="off">
-            <button mat-icon-button *ngIf="searchtouch" (click)="clear()">
+            <input class="searchbarinput" [(ngModel)]="searched" matInput placeholder="Search" autocomplete="off">
+            <button mat-icon-button *ngIf="searched" (click)="searched=''">
                 <mat-icon>clear</mat-icon>
             </button>
         </mat-card>
-        <!-- <span class="username"> {{username}}</span> -->
+        <button mat-icon-button style="margin-left: 30px;" *ngIf="mobileQuery.matches" (click)="mobilesearch=true">
+            <mat-icon>search</mat-icon>
+        </button>
         <div class="extra">
             <div>
                 <button mat-icon-button class="refresh">
@@ -22,8 +23,8 @@
                 </button>
 
                 <button mat-icon-button class="viewclass" (click)="view_mode()">
-                    <mat-icon *ngIf="show">view_module</mat-icon>
-                    <mat-icon *ngIf="!show">view_list</mat-icon>
+                    <mat-icon *ngIf="isgrid">view_module</mat-icon>
+                    <mat-icon *ngIf="!isgrid">view_list</mat-icon>
                 </button>
             </div>
             <button mat-icon-button class="usericon" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
@@ -41,7 +42,17 @@
             </mat-menu>
         </div>
     </mat-toolbar>
-
+    <mat-toolbar *ngIf="mobilesearch" class="example-toolbar">
+        <mat-card class="searchbar">
+            <button mat-icon-button (click)="mobilesearch=!mobilesearch">
+                <mat-icon>keyboard_backspace</mat-icon>
+            </button>
+            <input class="searchbarinput" [(ngModel)]="searched" matInput placeholder="Search" autocomplete="off">
+            <button mat-icon-button *ngIf="searched" (click)="searched=''">
+                <mat-icon>clear</mat-icon>
+            </button>
+        </mat-card>
+    </mat-toolbar>
     <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
         <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
             fixedTopGap="56">
@@ -56,11 +67,10 @@
             <div class="createnote">
                 <app-note></app-note>
             </div>
-            <div class="contentsNotesgrid" *ngIf="show">
-                <app-get-all-note class="gridview"></app-get-all-note>
-            </div>
-            <div class="contentsNoteslist" *ngIf="!show">
-                <app-get-all-note class="listview"></app-get-all-note>
+            <div>
+                <app-get-all-note [isgrid]="isgrid" [className]="isgrid?'contentsNotesgrid':'contentsNoteslist'"
+                    (noterefreshevt)="refresh($event)">
+                </app-get-all-note>
             </div>
         </mat-sidenav-content>
     </mat-sidenav-container>

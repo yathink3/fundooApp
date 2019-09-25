@@ -17,7 +17,6 @@
 .example-is-mobile .example-toolbar {
   position: fixed;
   z-index: 2;
-  color: white;
   border: solid 1px rgba(0, 0, 0, 0.04);
 }
 
@@ -41,7 +40,7 @@ img.example-app-icon {
   display: flex;
   margin-left: 30px;
   border-radius: 8px;
-  width: 100%;
+  width: 120vw;
   min-width: 24px;
   height: 20px;
   font-size: 16px;
@@ -76,6 +75,7 @@ img.example-app-icon {
 }
 
 .createnote {
+  min-width: 303px;
   margin-top: 60px;
   width: 75%;
 }
@@ -89,18 +89,4 @@ img.example-app-icon {
   margin-top: 30px;
   margin-bottom: 30px;
   width: 57%;
-}
-
-
-.gridview {
-  width: 78vw;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  -webkit-column-break-inside: avoid;
-}
-
-.listview {
-  width: 78vw;
-  justify-content: space-around;
 }

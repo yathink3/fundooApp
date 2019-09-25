@@ -36,3 +36,19 @@ textarea {
 .mat-tooltip.tooltip {
   font-size: 12px;
 }
+
+
+.colorpalette-card {
+  width: 175px;
+  margin-top: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.colorbold {
+  border: 2px solid black;
+}

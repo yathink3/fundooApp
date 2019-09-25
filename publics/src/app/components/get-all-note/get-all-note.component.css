@@ -1,8 +1,20 @@
-.note {
+.gridview {
+  width: 78vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+
+}
+
+.listview {
+  justify-content: space-around;
+}
+
+.gridnote {
+  width: 200px;
   display: flex;
   margin-top: 10%;
   border-radius: 6px;
-  width: auto;
   min-width: 190px;
   height: auto;
   font-size: 16px;
@@ -10,6 +22,50 @@
   align-items: center;
   flex-direction: column;
 }
+
+.listnote {
+  width: 70vw;
+  display: flex;
+  margin-top: 10%;
+  border-radius: 6px;
+  min-width: 190px;
+  height: auto;
+  font-size: 16px;
+  line-height: 25px;
+  align-items: center;
+  flex-direction: column;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.gridnote.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.listnote.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+
+
 
 .noteinput1 {
   border: none;
@@ -32,10 +88,6 @@
   display: inline-block;
   word-break: break-word;
 
-  /* display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap; */
-
 }
 
 .contents {
@@ -51,8 +103,18 @@
 
 }
 
-textarea {
-  resize: none;
-  overflow: hidden;
-  max-height: 100px;
+.colorpalette-card {
+  width: 175px;
+  margin-top: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+
+.colorbold {
+  border: 2px solid black;
 }

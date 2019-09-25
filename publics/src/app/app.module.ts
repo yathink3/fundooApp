@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ClickOutsideModule } from 'ng-click-outside';
 
 import { RegisterationComponent } from './components/registeration/registeration.component';
 import { LoginComponent } from './components/login/login.component';
@@ -43,7 +45,9 @@ import { GetAllNoteComponent } from './components/get-all-note/get-all-note.comp
     HttpClientModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    DragDropModule,
+    ClickOutsideModule
   ],
   providers: [],
   bootstrap: [AppComponent]

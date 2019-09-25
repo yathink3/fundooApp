@@ -13,4 +13,16 @@ export class NotesService {
   getAllNotes(userid) {
     return this.http.get(this.URL + 'getAllNotes/' + userid);
   }
+  updateNotecolor(data) {
+    return this.http.post(this.URL + 'updateNotecolor', data);
+  }
+  updateNoteReminder(data) {
+    return this.http.post(this.URL + 'updateNoteReminder', data);
+  }
+  archievenote(data) {
+    return this.http.post(this.URL + 'archievenote', data);
+  }
+  addTrashnote(data) {
+    return this.http.post(this.URL + 'addTrashnote', data);
+  }
 }

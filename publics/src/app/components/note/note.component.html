@@ -13,8 +13,8 @@
 </mat-card>
 
 
-<mat-card class="createnote" #noteGog *ngIf="!noteshow" style=" height: auto;  flex-direction: column;">
-    <!-- (mouseleave)="closetime()" -->
+<mat-card class="createnote" #noteGog *ngIf="!noteshow" style=" height: auto;  flex-direction: column;"
+    [style.background-color]="colorPalette[colorid]['colorCode']" (clickOutside)="onClickedOutside($event)">
     <div style="display: flex;width: 97%">
         <textarea matInput matTextareaAutosize tabIndex="2" class="noteinput1" (keyup.enter)="medri()"
             [(ngModel)]="title" matInput placeholder="Title" autocomplete="off"></textarea>
@@ -29,7 +29,7 @@
     </div>
     <div style="margin-right: auto;" *ngIf="rem">
         <mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
-            <mat-chip>{{remdate}}
+            <mat-chip>{{rem}}
                 <mat-icon matChipRemove (click)="removereminder()">cancel</mat-icon>
             </mat-chip>
         </mat-chip-list>
@@ -50,29 +50,38 @@
                     <owl-date-time #dt1></owl-date-time>
                 </mat-form-field>
             </div>
-            <button style="margin-left:185px" mat-button (click)="savereminder()">save</button>
+            <button style="margin-left:185px" mat-button (click)="savereminder(tx_date)">save</button>
         </mat-menu>
         <button mat-icon-button matTooltip="colloborate">
             <mat-icon class="icon">person_add</mat-icon>
         </button>
-        <button mat-icon-button matTooltip="archive">
-            <mat-icon class="icon">archive</mat-icon>
-        </button>
+
         <button mat-icon-button matTooltip="note color" [matMenuTriggerFor]="colorset" aria-label="Toggle menu">
             <mat-icon class="icon">color_lens</mat-icon>
         </button>
         <mat-menu #colorset="matMenu">
             <span style="margin-left:20px">Color</span>
-            <span style="margin-left:100%"></span>
-            <div mat-menu-item>
-
+            <div class="colorpalette-card">
+                <div *ngFor="let colr of colorPalette; let in = index">
+                    <button mat-icon-button matTooltip="{{colr.name}}" [style.background-color]="colr.colorCode"
+                        (click)="setcolr(in)" (mouseenter)="colr.hover=true"
+                        [ngClass]="(colr.hover||in==colorid)?'colorbold':''" (mouseleave)="colr.hover=false">
+                        <mat-icon *ngIf="in==colorid" class="icon">done</mat-icon>
+                    </button>
+                </div>
             </div>
-            <button style="margin-left:185px" mat-button (click)="savecolor()">save</button>
         </mat-menu>
         <button mat-icon-button matTooltip="add photo">
             <mat-icon class="icon" (click)="file.click()">insert_photo</mat-icon>
             <input style="display: none;" type="file" #file (change)="onSelectImage($event, '01')" />
         </button>
+        <button mat-icon-button matTooltip="archive" (click)="archieveNote()">
+            <mat-icon class="icon">archive</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Add label">
+            <mat-icon class="icon">label</mat-icon>
+        </button>
+
         <button mat-button style="margin-left: auto;" (click)="closetime()">close</button>
     </div>
 </mat-card>
