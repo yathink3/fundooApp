@@ -3,18 +3,19 @@
         (mouseenter)="item.hover=true" (mouseleave)="item.hover=mouseleave(item.hover)"
         [style.background-color]="colorPalette[item.color_id]['colorCode']">
         <div style="display: flex;margin-top: -10px;width: 100%;">
-            <div>
+            <div (click)="openDialog()" [ngStyle]="{'min-width':isgrid?'170px':'63vw'}">
                 <h4 class="title">{{item.title}}</h4>
             </div>
             <div style="margin-left: auto; width: 28px;">
-                <button mat-icon-button matTooltip="pin note" *ngIf="item.hover">
+                <button (click)="personpin()" mat-icon-button matTooltip="pin note" *ngIf="item.hover">
                     <mat-icon class="icon">person_pin</mat-icon>
                 </button>
             </div>
         </div>
-        <h6 class="contents">{{item.description}}</h6>
-        <div style="margin-right: auto;margin-top: 10px;" *ngIf="item.reminder">
-            <mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
+        <h6 (click)="openDialog()" class="contents">{{item.description}}</h6>
+        <div style="margin-right:auto;margin-top: 10px;">
+            <mat-chip-list style="margin-bottom: -2px" class="mat-chip-list-stacked" *ngIf="item.reminder"
+                aria-orientation=" vertical">
                 <mat-chip>{{item.reminder}}
                     <mat-icon matChipRemove (click)="removereminder(notetempid,item.id)">cancel</mat-icon>
                 </mat-chip>
@@ -22,16 +23,14 @@
         </div>
 
 
-        <div style="margin-right: auto;margin-top: 2px;">
-            <mat-chip-list *ngFor="let label_temp of item.labels; let templabelid = index" class="mat-chip-list-stacked"
-                aria-orientation="vertical">
-                <mat-chip>{{label_temp}}
+        <div style="margin-right: auto;margin-top: 4px;">
+            <mat-chip-list aria-orientation="vertical">
+                <mat-chip style="margin-bottom: 0px;" *ngFor="let label_temp of item.labels; let templabelid = index">
+                    {{label_temp}}
                     <mat-icon matChipRemove (click)="removelabel(notetempid,item.id,templabelid)">cancel</mat-icon>
                 </mat-chip>
             </mat-chip-list>
         </div>
-
-
         <div style="width: 228px;height: 23px;margin-right: auto;    margin-top: auto;">
             <button mat-icon-button style="margin-left: -13px;" matTooltip="reminder note" *ngIf="item.hover"
                 (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()" [matMenuTriggerFor]="rem"
@@ -112,7 +111,7 @@
                     </div>
                     <div *ngFor="let labele of labelsData; let labeleid = index">
                         <div mat-menu-item (click)="stopPropagation($event)">
-                            <mat-checkbox color="primary" #checkbox
+                            <mat-checkbox color="primary" #checkbox [ngModel]="item.labels.includes(labele)"
                                 (change)='addlabel(notetempid,item.id,labele,checkbox.checked)'>{{labele}}
                             </mat-checkbox>
                         </div>

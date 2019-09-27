@@ -1,10 +1,10 @@
 <?php
 
 /********************************************************************************************************************
- * @Execution : default node : cmd> FundooAccounts.php
- * @Purpose : rest api for fundoo app
+ * @Execution : default node : cmd> FundooNotes.php
+ * @Purpose : rest api for fundoo app for notesdata
  * @description: Create an Rest Api in codeigniter
- * @overview:api for login,signup,delete,passwordreset, etc
+ * @overview:api for create,delete,getall,update,reminder etc
  * @author : yathin k <yathink3@gmail.com>
  * @version : 1.0
  * @since : 13-aug-2019
@@ -113,6 +113,17 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+
+
+
+
+
+
+
+
+
+
+
     /**
      * @param:$id
      * @method:updateNote()

@@ -20,6 +20,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { NoteComponent } from './components/note/note.component';
 import { GetAllNoteComponent } from './components/get-all-note/get-all-note.component';
+import { SinglenoteComponent } from './components/singlenote/singlenote.component';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { GetAllNoteComponent } from './components/get-all-note/get-all-note.comp
     SidenavComponent,
     NoteComponent,
     GetAllNoteComponent,
+    SinglenoteComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,6 +51,7 @@ import { GetAllNoteComponent } from './components/get-all-note/get-all-note.comp
     DragDropModule,
     ClickOutsideModule
   ],
+  entryComponents: [SinglenoteComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

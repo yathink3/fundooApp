@@ -1,16 +1,17 @@
 <?php
 
 /********************************************************************************************************************
- * @Execution : default node : cmd> FundooAccountService.php
- * @Purpose : rest api for fundoo app
+ * @Execution : default node : cmd> FundooNotesService.php
+ * @Purpose : rest api for fundoo app for notesdata
  * @description: Create an Rest Api in codeigniter
- * @overview:api for login,signup,delete,passwordreset, etc
+ * @overview:api for create,delete,update,set reminder
  * @author : yathin k <yathink3@gmail.com>
  * @version : 1.0
  * @since : 13-sep-2019
  *******************************************************************************************************************/
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
+
 require APPPATH . 'rabbitmq/sender.php';
 class FundooNotesService extends CI_Controller
 {
@@ -63,14 +64,37 @@ class FundooNotesService extends CI_Controller
      * @method:isEmailPresent() 
      * @return :bool or result
      */
+
     public function getAllNotes($userid)
     {
         $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE user_id=:userid AND isArchieve=false AND isTrash=false  ORDER BY created DESC');
         $stmt->execute(['userid' => $userid]);
-        if ($result = $stmt->fetchAll(PDO::FETCH_ASSOC))
-            return ['status' => 200, "message" => "notes data", "data" => $result];
-        else return ['status' => 503, "message" => "got error when fetching data"];
+        if ($result = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
+            $tempresults = $result;
+            foreach ($result as $key => $element) {
+                $tempresults[$key]['labels'] = $this->fetchlabel($tempresults[$key]['id']);
+            }
+            return ['status' => 200, "message" => "notes data", "data" => $tempresults];
+        } else return ['status' => 503, "message" => "got error when fetching data"];
     }
+    public function fetchlabel($noteid)
+    {
+        $stmt = $this->db->conn_id->prepare('SELECT u.label
+        FROM noteslabels n
+        INNER JOIN userlabels u ON n.label_id=u.id
+        WHERE n.note_id=' . $noteid . '
+        ORDER BY n.created DESC');
+        $stmt->execute();
+        if ($result = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
+            $temp = array();
+            foreach ($result as $el) {
+                array_push($temp, $el['label']);
+            }
+            return $temp;
+        } else return [];
+    }
+
+
     public function updateNotecolor($notesData)
     {
         $stmt = $this->db->conn_id->prepare('UPDATE notes SET color_id=:colorid  WHERE id=:noteid');

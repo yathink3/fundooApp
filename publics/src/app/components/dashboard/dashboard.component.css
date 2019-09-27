@@ -20,6 +20,7 @@
   border: solid 1px rgba(0, 0, 0, 0.04);
 }
 
+
 h1.example-app-name {
   margin-left: 10px;
 }
@@ -47,6 +48,13 @@ img.example-app-icon {
   line-height: 34px;
   align-items: center;
 }
+
+.mat-card:not([class*=mat-elevation-z]) {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.1),
+    0 8px 10px 1px rgba(0, 0, 0, 0.1),
+    0 3px 12px 1px rgba(0, 0, 0, 0.1);
+}
+
 
 .searchbarinput {
   border: none;

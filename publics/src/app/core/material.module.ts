@@ -7,7 +7,6 @@ import {
   MatSlideToggleModule, ErrorStateMatcher, ShowOnDirtyErrorStateMatcher, MatCheckboxModule, MatSnackBarModule, MatGridListModule,
   MatSidenavModule, MatListModule, MatButtonToggleModule, MatTooltipModule, MatChipsModule
 } from '@angular/material';
-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
   imports: [

@@ -2,8 +2,12 @@ declare var require: any;
 import { Component, OnInit, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotesService } from '../../services/notes/notes.service';
+import { LabelsService } from '../../services/labels/labels.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { SinglenoteComponent } from '../singlenote/singlenote.component';
+import { filter } from 'rxjs/operators';
 const dateFormat = require('dateformat');
 @Component({
   selector: 'app-get-all-note',
@@ -11,6 +15,7 @@ const dateFormat = require('dateformat');
   styleUrls: ['./get-all-note.component.css'],
 })
 export class GetAllNoteComponent implements OnInit {
+  dialoguenote: MatDialogRef<SinglenoteComponent>;
   @Input() isgrid: boolean;
   items = [];
   isMatMenuOpen = false;
@@ -30,12 +35,32 @@ export class GetAllNoteComponent implements OnInit {
     { name: 'gray', colorCode: '#eeeeee' },
     { name: 'Brown', colorCode: '#bcaaa4' },
   ];
-  labelsData = ['manoj', 'narayan'];
+  templabelsData = [];
+  labelsData = [];
   data = JSON.parse(localStorage.getItem('userData'));
-  constructor(private svc: NotesService, private route: Router, private router: ActivatedRoute, private snackBar: MatSnackBar) {
+  constructor(private svc: NotesService, private lsvc: LabelsService, private route: Router,
+    private router: ActivatedRoute, private snackBar: MatSnackBar, private dialog: MatDialog) {
   }
   ngOnInit() {
+    this.getAllLabels();
     this.displayallnaotes();
+  }
+  getAllLabels() {
+    this.lsvc.getAllLabels(this.data.id)
+      .subscribe(result => {
+        const temp = JSON.stringify(result);
+        const results = JSON.parse(temp);
+        console.log(results.message, ':', results);
+        this.templabelsData = results.data;
+        this.templabelsData.forEach(ele => {
+          this.labelsData.push(ele.label);
+        });
+        console.log(this.labelsData);
+        console.log(this.templabelsData);
+      },
+        error => {
+          console.log(error.error.message, ':', error.error);
+        });
   }
   displayallnaotes() {
     this.svc.getAllNotes(this.data.id)
@@ -44,9 +69,6 @@ export class GetAllNoteComponent implements OnInit {
         const results = JSON.parse(temp);
         console.log(results.message, ':', results);
         this.items = results.data;
-        this.items.forEach(im => {
-          im.labels = [];
-        });
         console.log(this.items);
       },
         error => {
@@ -149,21 +171,98 @@ export class GetAllNoteComponent implements OnInit {
   }
   addlabel(noteindex, noteid, labele, check) {
     if (check) {
-      this.items[noteindex].labels.push(labele);
-      console.log('label pushed');
+      this.lsvc.addNoteLabel({
+        note_id: noteid,
+        label_id: this.findlabelsid(this.templabelsData, labele)
+      })
+        .subscribe(result => {
+          const temp = JSON.stringify(result);
+          const results = JSON.parse(temp);
+          console.log(results.message, ':', results);
+          this.items[noteindex].labels.unshift(labele);
+          console.log('label pushed');
+        },
+          error => {
+            console.log(error.error.message, ':', error.error);
+          });
     } else {
-      // this.items[noteindex].labels.slice(labele);
-      console.log('label removed');
+      console.log(this.findlabelsid(this.templabelsData, labele));
+      this.lsvc.removeNotelabel({
+        note_id: noteid,
+        label_id: this.findlabelsid(this.templabelsData, labele)
+      })
+        .subscribe(result => {
+          const temp = JSON.stringify(result);
+          const results = JSON.parse(temp);
+          console.log(results.message, ':', results);
+          this.items[noteindex].labels.splice(this.items[noteindex].labels.indexOf(labele), 1);
+          console.log('label removed');
+        },
+          error => {
+            console.log(error.error.message, ':', error.error);
+          });
     }
-    console.log(this.items);
-    console.log(this.items[0].labels[0]);
   }
+
   removelabel(noteindex, noteid, templabelid) {
-    this.items[noteindex].labels.splice(templabelid, 1);
+    console.log(this.findlabelsid(this.templabelsData, this.items[noteindex].labels[templabelid]));
+    this.lsvc.removeNotelabel({
+      note_id: noteid,
+      label_id: this.findlabelsid(this.templabelsData, this.items[noteindex].labels[templabelid])
+    })
+      .subscribe(result => {
+        const temp = JSON.stringify(result);
+        const results = JSON.parse(temp);
+        console.log(results.message, ':', results);
+        this.items[noteindex].labels.splice(templabelid, 1);
+        console.log('label removed');
+      },
+        error => {
+          console.log(error.error.message, ':', error.error);
+        });
   }
   addnewlabel() {
     if (this.newlabel && !this.labelsData.includes(this.newlabel)) {
-      this.labelsData.push(this.newlabel);
+      this.lsvc.createlabel({
+        user_id: this.data.id,
+        label: this.newlabel
+      })
+        .subscribe(result => {
+          const temp = JSON.stringify(result);
+          const results = JSON.parse(temp);
+          console.log(results.message, ':', results);
+          this.labelsData.unshift(this.newlabel);
+          this.templabelsData.unshift(results.data);
+          console.log(this.templabelsData);
+        },
+          error => {
+            console.log(error.error.message, ':', error.error);
+          });
     }
+
   }
+  findlabelsid(data, value): any {
+    let temp = 0;
+    data.forEach(ele => {
+      if (ele.label === value) {
+        console.log(ele.id);
+        temp = ele.id;
+      }
+    });
+    return temp;
+  }
+
+
+  openDialog() {
+    this.dialoguenote = this.dialog.open(SinglenoteComponent);
+
+
+    //   this.dialoguenote
+    //     .afterClosed()
+    //     .pipe(filter(name => name))
+    //     .subscribe(name => this.files.push({ name, content: '' }));
+    // }
+  }
+
+
 }

@@ -67,3 +67,10 @@ $route['note/updateNotecolor'] = 'FundooNotes/updateNotecolor';
 $route['note/updateNoteReminder'] = 'FundooNotes/updateNoteReminder';
 $route['note/archievenote'] = 'FundooNotes/archievenoteSet';
 $route['note/addTrashnote'] = 'FundooNotes/addTrashnote';
+
+
+$route['label/createlabel'] = 'FundooLabels/createLabel';
+$route['label/getAllLabels/(:any)'] = 'FundooLabels/getAllLabels/$1';
+
+$route['label/addNoteLabel'] = 'FundooLabels/addNoteLabel';
+$route['label/removeNoteLabel'] = 'FundooLabels/removeNoteLabel';
