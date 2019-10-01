@@ -63,10 +63,13 @@ $route['user/forgotPassword/(:any)'] = 'FundooAccounts/reset/$1';
 
 $route['note/createnote'] = 'FundooNotes/createNote';
 $route['note/getAllNotes/(:any)'] = 'FundooNotes/getAllNotes/$1';
+$route['note/getOneNote/(:any)'] = 'FundooNotes/getOneNote/$1';
+$route['note/updateNotes'] = 'FundooNotes/updateNotes';
 $route['note/updateNotecolor'] = 'FundooNotes/updateNotecolor';
 $route['note/updateNoteReminder'] = 'FundooNotes/updateNoteReminder';
 $route['note/archievenote'] = 'FundooNotes/archievenoteSet';
 $route['note/addTrashnote'] = 'FundooNotes/addTrashnote';
+
 
 
 $route['label/createlabel'] = 'FundooLabels/createLabel';

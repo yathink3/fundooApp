@@ -1,7 +1,7 @@
 .example-container {
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
@@ -21,8 +21,10 @@
 }
 
 
+
 h1.example-app-name {
   margin-left: 10px;
+  margin-right: 4vw;
 }
 
 img.example-app-icon {
@@ -31,15 +33,23 @@ img.example-app-icon {
 
 .example-sidenav-container {
   flex: 1;
+  z-index: -1;
 }
 
 .example-is-mobile .example-sidenav-container {
   flex: 1 0 auto;
 }
 
+.mat-toolbar:not([class*=mat-elevation-z]) {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0),
+    0 8px 10px 1px rgba(0, 0, 0, 0.1),
+    0 3px 12px 1px rgba(0, 0, 0, 0.1);
+}
+
 .searchbar {
   display: flex;
-  margin-left: 30px;
+  margin-left: 2vw;
+  margin-right: 3vw;
   border-radius: 8px;
   width: 120vw;
   min-width: 24px;
@@ -72,10 +82,8 @@ img.example-app-icon {
 }
 
 .extra {
-  width: 100%;
   display: flex;
-  min-width: 115px;
-  justify-content: space-evenly;
+  display: contents;
 }
 
 .usericon {
@@ -84,8 +92,10 @@ img.example-app-icon {
 
 .createnote {
   min-width: 303px;
-  margin-top: 60px;
+  margin-top: 7vw;
   width: 75%;
+  max-width: 600px;
+  margin-bottom: 3vw;
 }
 
 .contentsNotesgrid {
@@ -97,4 +107,16 @@ img.example-app-icon {
   margin-top: 30px;
   margin-bottom: 30px;
   width: 57%;
+}
+
+
+.sidenav-content {
+  padding-top: 4px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 3px;
+  width: 250px;
+  height: 45px;
+  border-radius: 0 20px 20px 0;
+
 }

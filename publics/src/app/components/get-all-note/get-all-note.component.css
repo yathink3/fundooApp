@@ -3,17 +3,19 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  max-width: 800px;
 
 }
 
 .listview {
   justify-content: space-around;
+  max-width: 800px;
 }
 
 .gridnote {
   width: 200px;
   display: flex;
-  margin-top: 10%;
+  margin-top: 40px;
   border-radius: 6px;
   min-width: 190px;
   height: auto;
@@ -32,7 +34,7 @@
 .listnote {
   width: 70vw;
   display: flex;
-  margin-top: 10%;
+  margin-top: 40px;
   border-radius: 6px;
   min-width: 190px;
   height: auto;
@@ -40,6 +42,7 @@
   line-height: 25px;
   align-items: center;
   flex-direction: column;
+  max-width: 700px;
 }
 
 .cdk-drag-preview {

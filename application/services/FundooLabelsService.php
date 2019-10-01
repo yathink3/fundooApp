@@ -61,7 +61,7 @@ class FundooLabelsService extends CI_Controller
         if (!array_key_exists('created', $labelsData))  $labelsData['created'] = date("Y-m-d H:i:s");
         $query = 'INSERT INTO noteslabels (note_id,label_id,created) VALUES (:note_id,:label_id,:created)';
         if ($this->db->conn_id->prepare($query)->execute($labelsData)) {
-            return ['status' => 200, "message" => "note added succefully"];
+            return ['status' => 200, "message" => "note label added succefully"];
         } else return ['status' => 404, "message" => "Some problems occurred, please try again."];
     }
 

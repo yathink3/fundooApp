@@ -1,4 +1,5 @@
-<div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
+<div class="example-container" [ngStyle]="{'position':mobileQuery.matches?'absolute':'fixed'}"
+    [class.example-is-mobile]="mobileQuery.matches">
     <mat-toolbar *ngIf="!mobilesearch" class="example-toolbar">
         <button mat-icon-button (click)="snav.toggle()">
             <mat-icon>menu</mat-icon>
@@ -13,18 +14,18 @@
                 <mat-icon>clear</mat-icon>
             </button>
         </mat-card>
-        <button mat-icon-button style="margin-left: 30px;" *ngIf="mobileQuery.matches" (click)="mobilesearch=true">
+        <button mat-icon-button style="margin-left: 3vw;" *ngIf="mobileQuery.matches" (click)="mobilesearch=true">
             <mat-icon>search</mat-icon>
         </button>
         <div class="extra">
-            <div>
+            <div style="width: 44vw;">
                 <button mat-icon-button class="refresh">
                     <mat-icon>refresh</mat-icon>
                 </button>
 
                 <button mat-icon-button class="viewclass" (click)="view_mode()">
-                    <mat-icon *ngIf="isgrid">view_module</mat-icon>
-                    <mat-icon *ngIf="!isgrid">view_list</mat-icon>
+                    <img *ngIf="isgrid" style="width:20px;width:20px" src="../../../assets/images/list_view.png">
+                    <img *ngIf="!isgrid" style="width:19px;width:19px" src="../../../assets/images/grid_view.png">
                 </button>
             </div>
             <button mat-icon-button class="usericon" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
@@ -53,23 +54,57 @@
             </button>
         </mat-card>
     </mat-toolbar>
+
     <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
         <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
             fixedTopGap="56">
-            <mat-nav-list>
-                <a mat-list-item href="#">Link 1</a>
-                <a mat-list-item href="#">Link 2</a>
-                <a mat-list-item href="#">Link 3</a>
+            <mat-nav-list style=" overflow-x: hidden;">
+                <button mat-button class="sidenav-content" (click)="pointer='Note'"
+                    [ngStyle]="{'background-color':pointer=='Note'?'#F3EFC3':''}">
+                    <i class="material-icons-outlined"
+                        style="margin-left:10px;margin-right:30px;">emoji_objects</i>Notes
+                </button>
+                <button mat-button class="sidenav-content" (click)="pointer='Reminder'"
+                    [ngStyle]="{'background-color':pointer=='Reminder'?'#F3EFC3':''}">
+                    <i class="material-icons-outlined"
+                        style="margin-left:10px;margin-right:30px;">notifications</i>Reminder
+                </button>
+                <hr />
+                <div style=" margin-left: 22px;margin-bottom: 6px;"><span style="font-size: 13px;">LABELS</span></div>
+                <div>
+                    <button mat-button class="sidenav-content" *ngFor="let labele of labelsData; let labeleid = index"
+                        (click)="pointer=labele.label"
+                        [ngStyle]="{'background-color':pointer==labele.label?'#F3EFC3':''}">
+                        <i class="material-icons-outlined"
+                            style="margin-left:10px;margin-right:30px;">label</i>{{labele.label}}
+                    </button>
+                </div>
+                <button mat-button class="sidenav-content" (click)="pointer='Edit'"
+                    [ngStyle]="{'background-color':pointer=='Edit'?'#F3EFC3':''}">
+                    <i class="material-icons-outlined" style="margin-left:10px;margin-right:30px;">edit</i>Edit
+                    labels
+                </button>
+                <hr />
+                <button mat-button class="sidenav-content" (click)="pointer='Archieve'"
+                    [ngStyle]="{'background-color':pointer=='Archieve'?'#F3EFC3':''}">
+                    <i class="material-icons-outlined" style="margin-left:10px;margin-right:30px;">archive</i>Archieve
+                </button>
+                <button mat-button class="sidenav-content" (click)="pointer='Bin'"
+                    [ngStyle]="{'background-color':pointer=='Bin'?'#F3EFC3':''}">
+                    <i class="material-icons-outlined" style="margin-left:10px;margin-right:30px;">delete</i>Bin
+                </button>
             </mat-nav-list>
         </mat-sidenav>
 
         <mat-sidenav-content class="container">
             <div class="createnote">
-                <app-note></app-note>
+                <app-note [notes]="notes" [labelsData]="labelsData" [colorPalette]="colorPalette" [userData]="userData">
+                </app-note>
             </div>
-            <div>
+            <div style="margin-bottom:30px">
                 <app-get-all-note [isgrid]="isgrid" [className]="isgrid?'contentsNotesgrid':'contentsNoteslist'"
-                    (noterefreshevt)="refresh($event)">
+                    (noterefreshevt)="refresh($event)" [labelsData]="labelsData" [items]="notes"
+                    [colorPalette]="colorPalette" [userData]="userData">
                 </app-get-all-note>
             </div>
         </mat-sidenav-content>

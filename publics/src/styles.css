@@ -11,3 +11,10 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.my-dialogue .mat-dialog-container {
+  width: 70vw;
+  max-width: 600px;
+  min-width: 230px;
+  border-radius: 10px;
+}

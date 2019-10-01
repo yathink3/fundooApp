@@ -17,66 +17,17 @@ const dateFormat = require('dateformat');
 export class GetAllNoteComponent implements OnInit {
   dialoguenote: MatDialogRef<SinglenoteComponent>;
   @Input() isgrid: boolean;
-  items = [];
+  @Input() labelsData;
+  @Input() items;
+  @Input() colorPalette;
+  @Input() userData;
   isMatMenuOpen = false;
   grid = true;
   newlabel = '';
-  colorPalette = [
-    { name: 'default', colorCode: '#FDFEFE' },
-    { name: 'Red', colorCode: '#ef9a9a' },
-    { name: 'Cyan', colorCode: '#80deea' },
-    { name: 'Blue', colorCode: '#2196f3' },
-    { name: 'Indigo', colorCode: '#9fa8da' },
-    { name: 'LightBlue', colorCode: '#90caf9' },
-    { name: 'Purple', colorCode: '#b39ddb' },
-    { name: 'Yellow', colorCode: '#fff59d' },
-    { name: 'Lime', colorCode: '#e6ee9c' },
-    { name: 'Pink', colorCode: ' #f48fb1' },
-    { name: 'gray', colorCode: '#eeeeee' },
-    { name: 'Brown', colorCode: '#bcaaa4' },
-  ];
-  templabelsData = [];
-  labelsData = [];
-  data = JSON.parse(localStorage.getItem('userData'));
   constructor(private svc: NotesService, private lsvc: LabelsService, private route: Router,
     private router: ActivatedRoute, private snackBar: MatSnackBar, private dialog: MatDialog) {
   }
   ngOnInit() {
-    this.getAllLabels();
-    this.displayallnaotes();
-  }
-  getAllLabels() {
-    this.lsvc.getAllLabels(this.data.id)
-      .subscribe(result => {
-        const temp = JSON.stringify(result);
-        const results = JSON.parse(temp);
-        console.log(results.message, ':', results);
-        this.templabelsData = results.data;
-        this.templabelsData.forEach(ele => {
-          this.labelsData.push(ele.label);
-        });
-        console.log(this.labelsData);
-        console.log(this.templabelsData);
-      },
-        error => {
-          console.log(error.error.message, ':', error.error);
-        });
-  }
-  displayallnaotes() {
-    this.svc.getAllNotes(this.data.id)
-      .subscribe(result => {
-        const temp = JSON.stringify(result);
-        const results = JSON.parse(temp);
-        console.log(results.message, ':', results);
-        this.items = results.data;
-        console.log(this.items);
-      },
-        error => {
-          console.log(error.error.message, ':', error.error);
-        });
-  }
-  refresh($event) {
-    this.displayallnaotes();
   }
   mouseleave(data) {
     if (data === true && this.isMatMenuOpen === true) {
@@ -94,7 +45,6 @@ export class GetAllNoteComponent implements OnInit {
   }
   menuClosed() {
     this.isMatMenuOpen = false;
-    return false;
   }
   savereminder() {
   }
@@ -173,29 +123,28 @@ export class GetAllNoteComponent implements OnInit {
     if (check) {
       this.lsvc.addNoteLabel({
         note_id: noteid,
-        label_id: this.findlabelsid(this.templabelsData, labele)
+        label_id: labele.id
       })
         .subscribe(result => {
           const temp = JSON.stringify(result);
           const results = JSON.parse(temp);
           console.log(results.message, ':', results);
-          this.items[noteindex].labels.unshift(labele);
+          this.items[noteindex].labels.unshift(labele.label);
           console.log('label pushed');
         },
           error => {
             console.log(error.error.message, ':', error.error);
           });
     } else {
-      console.log(this.findlabelsid(this.templabelsData, labele));
       this.lsvc.removeNotelabel({
         note_id: noteid,
-        label_id: this.findlabelsid(this.templabelsData, labele)
+        label_id: labele.id
       })
         .subscribe(result => {
           const temp = JSON.stringify(result);
           const results = JSON.parse(temp);
           console.log(results.message, ':', results);
-          this.items[noteindex].labels.splice(this.items[noteindex].labels.indexOf(labele), 1);
+          this.items[noteindex].labels.splice(this.items[noteindex].labels.indexOf(labele.label), 1);
           console.log('label removed');
         },
           error => {
@@ -205,10 +154,9 @@ export class GetAllNoteComponent implements OnInit {
   }
 
   removelabel(noteindex, noteid, templabelid) {
-    console.log(this.findlabelsid(this.templabelsData, this.items[noteindex].labels[templabelid]));
     this.lsvc.removeNotelabel({
       note_id: noteid,
-      label_id: this.findlabelsid(this.templabelsData, this.items[noteindex].labels[templabelid])
+      label_id: this.labelsData.filter(ele => ele.label === this.items[noteindex].labels[templabelid])[0].id
     })
       .subscribe(result => {
         const temp = JSON.stringify(result);
@@ -222,18 +170,16 @@ export class GetAllNoteComponent implements OnInit {
         });
   }
   addnewlabel() {
-    if (this.newlabel && !this.labelsData.includes(this.newlabel)) {
+    if (this.newlabel && !this.labelsData.some(ele => ele.label === this.newlabel)) {
       this.lsvc.createlabel({
-        user_id: this.data.id,
+        user_id: this.userData.id,
         label: this.newlabel
       })
         .subscribe(result => {
           const temp = JSON.stringify(result);
           const results = JSON.parse(temp);
           console.log(results.message, ':', results);
-          this.labelsData.unshift(this.newlabel);
-          this.templabelsData.unshift(results.data);
-          console.log(this.templabelsData);
+          this.labelsData.unshift(results.data);
         },
           error => {
             console.log(error.error.message, ':', error.error);
@@ -241,28 +187,47 @@ export class GetAllNoteComponent implements OnInit {
     }
 
   }
-  findlabelsid(data, value): any {
-    let temp = 0;
-    data.forEach(ele => {
-      if (ele.label === value) {
-        console.log(ele.id);
-        temp = ele.id;
+  openDialog(noteindex, itemdata) {
+    const olddata = { title: itemdata.title, description: itemdata.description };
+    this.dialoguenote = this.dialog.open(SinglenoteComponent, {
+      panelClass: 'my-dialogue',
+      data: {
+        itemdataa: itemdata,
+        labeldataa: this.labelsData,
+        colorPalettea: this.colorPalette,
+        userida: this.userData.id
       }
     });
-    return temp;
+
+
+    this.dialoguenote
+      .afterClosed()
+      .subscribe(item => {
+        this.updatenotesdata(itemdata, olddata);
+        if (item) {
+          if (item.trash) {
+            this.archievenote(noteindex, itemdata.id);
+          } else if (item.archieve) {
+            this.addTrashnote(noteindex, itemdata.id);
+          }
+        }
+      });
   }
-
-
-  openDialog() {
-    this.dialoguenote = this.dialog.open(SinglenoteComponent);
-
-
-    //   this.dialoguenote
-    //     .afterClosed()
-    //     .pipe(filter(name => name))
-    //     .subscribe(name => this.files.push({ name, content: '' }));
-    // }
+  updatenotesdata(itemdata, olddata) {
+    if (itemdata.title !== olddata.title || itemdata.description !== olddata.description) {
+      this.svc.updateNotes({ note_id: itemdata.id, title: itemdata.title, description: itemdata.description })
+        .subscribe(result => {
+          const temp = JSON.stringify(result);
+          const results = JSON.parse(temp);
+          console.log(results.message, ':', results);
+          this.snackBar.open(results.message, 'ok', {
+            duration: 2000,
+          });
+        },
+          error => {
+            console.log(error.error.message, ':', error.error);
+          });
+    }
   }
-
 
 }

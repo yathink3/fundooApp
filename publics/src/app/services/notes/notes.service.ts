@@ -13,6 +13,9 @@ export class NotesService {
   getAllNotes(userid) {
     return this.http.get(this.URL + 'getAllNotes/' + userid);
   }
+  getOneNote(noteid) {
+    return this.http.get(this.URL + 'getOneNote/' + noteid);
+  }
   updateNotecolor(data) {
     return this.http.post(this.URL + 'updateNotecolor', data);
   }
@@ -25,4 +28,8 @@ export class NotesService {
   addTrashnote(data) {
     return this.http.post(this.URL + 'addTrashnote', data);
   }
+  updateNotes(data) {
+    return this.http.post(this.URL + 'updateNotes', data);
+  }
+
 }

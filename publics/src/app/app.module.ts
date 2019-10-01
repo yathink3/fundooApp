@@ -17,7 +17,6 @@ import { ForgotComponent } from './components/forgot/forgot.component';
 import { ResetComponent } from './components/reset/reset.component';
 import { ValidateComponent } from './components/validate/validate.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { NoteComponent } from './components/note/note.component';
 import { GetAllNoteComponent } from './components/get-all-note/get-all-note.component';
 import { SinglenoteComponent } from './components/singlenote/singlenote.component';
@@ -32,7 +31,6 @@ import { SinglenoteComponent } from './components/singlenote/singlenote.componen
     ResetComponent,
     ValidateComponent,
     DashboardComponent,
-    SidenavComponent,
     NoteComponent,
     GetAllNoteComponent,
     SinglenoteComponent,

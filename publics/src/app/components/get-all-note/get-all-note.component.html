@@ -3,16 +3,17 @@
         (mouseenter)="item.hover=true" (mouseleave)="item.hover=mouseleave(item.hover)"
         [style.background-color]="colorPalette[item.color_id]['colorCode']">
         <div style="display: flex;margin-top: -10px;width: 100%;">
-            <div (click)="openDialog()" [ngStyle]="{'min-width':isgrid?'170px':'63vw'}">
+            <div (click)="openDialog(notetempid,item)" [ngStyle]="{'min-width':isgrid?'170px':'50vw'}">
                 <h4 class="title">{{item.title}}</h4>
             </div>
             <div style="margin-left: auto; width: 28px;">
                 <button (click)="personpin()" mat-icon-button matTooltip="pin note" *ngIf="item.hover">
-                    <mat-icon class="icon">person_pin</mat-icon>
+                    <img *ngIf="item.isPin==0" src="../../../assets/images/pin_outlined.svg">
+                    <img *ngIf="item.isPin==1" src="../../../assets/images/pin_filled.svg">
                 </button>
             </div>
         </div>
-        <h6 (click)="openDialog()" class="contents">{{item.description}}</h6>
+        <h6 (click)="openDialog(notetempid,item)" class="contents">{{item.description}}</h6>
         <div style="margin-right:auto;margin-top: 10px;">
             <mat-chip-list style="margin-bottom: -2px" class="mat-chip-list-stacked" *ngIf="item.reminder"
                 aria-orientation=" vertical">
@@ -35,7 +36,7 @@
             <button mat-icon-button style="margin-left: -13px;" matTooltip="reminder note" *ngIf="item.hover"
                 (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()" [matMenuTriggerFor]="rem"
                 aria-label="Toggle menu">
-                <mat-icon class="icon">add_alert</mat-icon>
+                <i class="material-icons-outlined">add_alert</i>
             </button>
             <mat-menu #rem="matMenu">
                 <span style="margin-left:20px">Reminder</span>
@@ -53,7 +54,7 @@
             </mat-menu>
             <button mat-icon-button *ngIf="item.hover" matTooltip="colloborate" [matMenuTriggerFor]="add_person"
                 aria-label="Toggle menu" (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()">
-                <mat-icon class=" icon">person_add</mat-icon>
+                <i class="material-icons-outlined">person_add</i>
             </button>
             <mat-menu #add_person="matMenu">
                 <span style="margin-left:20px">Add Person</span>
@@ -65,7 +66,7 @@
             </mat-menu>
             <button mat-icon-button *ngIf="item.hover" matTooltip="color note" [matMenuTriggerFor]="colr"
                 (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()" aria-label="Toggle menu">
-                <mat-icon class="icon">color_lens</mat-icon>
+                <i class="material-icons-outlined">color_lens</i>
             </button>
             <mat-menu #colr="matMenu">
                 <span style="margin-left:20px">Color</span>
@@ -81,17 +82,17 @@
                 </div>
             </mat-menu>
             <button mat-icon-button matTooltip="add image" *ngIf="item.hover">
-                <mat-icon class="icon" (click)="file.click()">insert_photo</mat-icon>
+                <i class="material-icons-outlined" (click)="file.click()">insert_photo</i>
                 <input style="display: none;" type="file" #file (change)="onSelectImage($event, '01')" />
             </button>
             <button mat-icon-button matTooltip="archieve note" *ngIf="item.hover"
                 (click)="archievenote(notetempid,item.id)">
-                <mat-icon class="icon">archive</mat-icon>
+                <i class="material-icons-outlined">archive</i>
             </button>
             <button mat-icon-button style="margin-left: -9px;" (click)="menuclicked()"
                 (menuClosed)="item.hover=menuClosed()" *ngIf="item.hover" matTooltip="more" [matMenuTriggerFor]="more"
                 aria-label="Toggle menu">
-                <mat-icon class="icon">more_vert</mat-icon>
+                <i class="material-icons-outlined">more_vert</i>
             </button>
             <mat-menu #more="matMenu">
                 <button mat-menu-item (click)="addTrashnote(notetempid,item.id)">
@@ -107,12 +108,13 @@
                         <mat-form-field style="width:120px">
                             <input matInput [(ngModel)]="newlabel" autocomplete="off" placeholder="Choose label">
                         </mat-form-field>
-                        <mat-icon style="margin-right:-8px" (click)="addnewlabel()">label</mat-icon>
+                        <mat-icon style="margin-right:-8px" matTooltip="create label" (click)="addnewlabel()">
+                            done_outline</mat-icon>
                     </div>
                     <div *ngFor="let labele of labelsData; let labeleid = index">
                         <div mat-menu-item (click)="stopPropagation($event)">
-                            <mat-checkbox color="primary" #checkbox [ngModel]="item.labels.includes(labele)"
-                                (change)='addlabel(notetempid,item.id,labele,checkbox.checked)'>{{labele}}
+                            <mat-checkbox color="primary" #checkbox [ngModel]="item.labels.includes(labele.label)"
+                                (change)='addlabel(notetempid,item.id,labele,checkbox.checked)'>{{labele.label}}
                             </mat-checkbox>
                         </div>
                     </div>

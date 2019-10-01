@@ -52,10 +52,11 @@ class FundooNotesService extends CI_Controller
     public function createNote($notesData)
     {
         if (!array_key_exists('created', $notesData))  $notesData['created'] = date("Y-m-d H:i:s");
-        $query = 'INSERT INTO notes (user_id,title,description,reminder,color_id,isArchieve,label_id,created) VALUES (:userid,:title,:desc,:rem,:colorid,:isArchieve,:labelid,:created)';
-        if ($this->db->conn_id->prepare($query)->execute($notesData))
-            return ['status' => 200, "message" => "Note Created succefully"];
-        else return ['status' => 404, "message" => "Some problems occurred, please try again."];
+        $query = 'INSERT INTO notes (user_id,title,description,reminder,color_id,isArchieve,isPin,created) VALUES (:userid,:title,:desc,:rem,:colorid,:isArchieve,:isPin,:created)';
+        if ($this->db->conn_id->prepare($query)->execute($notesData)) {
+            $id = $this->db->conn_id->lastInsertId();
+            return ['status' => 200, "message" => "Note Created succefully", "id" => $id];
+        } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
     }
 
 
@@ -77,6 +78,16 @@ class FundooNotesService extends CI_Controller
             return ['status' => 200, "message" => "notes data", "data" => $tempresults];
         } else return ['status' => 503, "message" => "got error when fetching data"];
     }
+
+    public function getOneNote($id)
+    {
+        $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE id=:id AND isArchieve=false AND isTrash=false ');
+        $stmt->execute(['id' => $id]);
+        if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result['labels'] = $this->fetchlabel($id);
+            return ['status' => 200, "message" => "Note sent successfully", "data" => $result];
+        } else return ['status' => 503, "message" => "got error when fetching data"];
+    }
     public function fetchlabel($noteid)
     {
         $stmt = $this->db->conn_id->prepare('SELECT u.label
@@ -93,7 +104,13 @@ class FundooNotesService extends CI_Controller
             return $temp;
         } else return [];
     }
-
+    public function updateNotes($notesData)
+    {
+        $stmt = $this->db->conn_id->prepare('UPDATE notes SET title=:title,description=:description WHERE id=:noteid');
+        if ($stmt->execute($notesData))
+            return ['status' => 200, "message" => "note content updated"];
+        else return ['status' => 503, "message" => "note content not updated", "data" => $notesData];
+    }
 
     public function updateNotecolor($notesData)
     {
