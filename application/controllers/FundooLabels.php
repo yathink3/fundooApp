@@ -88,4 +88,20 @@ class FundooLabels
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    public function updatelabel()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $labelsData = array();
+        $labelsData['id'] = $data->id;
+        $labelsData['label'] = $data->label;
+        $responce = $this->services->updatelabel($labelsData);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
+    public function deletelabel($labelid)
+    {
+        $responce = $this->services->deletelabel($labelid);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
 }

@@ -7,6 +7,8 @@ import {
   MatSlideToggleModule, ErrorStateMatcher, ShowOnDirtyErrorStateMatcher, MatCheckboxModule, MatSnackBarModule, MatGridListModule,
   MatSidenavModule, MatListModule, MatButtonToggleModule, MatTooltipModule, MatChipsModule
 } from '@angular/material';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
   imports: [
@@ -21,7 +23,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatIconModule,
     MatProgressSpinnerModule,
     MatButtonModule,
-    MatMenuModule,
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
@@ -42,6 +43,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatButtonToggleModule,
     MatTooltipModule,
     MatChipsModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+    FlexLayoutModule
   ],
   exports: [
     CommonModule,
@@ -75,7 +79,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatListModule,
     MatButtonToggleModule,
     MatTooltipModule,
-    MatChipsModule
+    MatChipsModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+    FlexLayoutModule
   ],
   providers: [
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }

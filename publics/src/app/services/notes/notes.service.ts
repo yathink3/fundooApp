@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { Observable, throwError } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +10,7 @@ export class NotesService {
   createnote(data) {
     return this.http.post(this.URL + 'createnote', data);
   }
-  getAllNotes(userid) {
+  getAllNotes(userid): Observable<any> {
     return this.http.get(this.URL + 'getAllNotes/' + userid);
   }
   getOneNote(noteid) {
@@ -31,5 +31,7 @@ export class NotesService {
   updateNotes(data) {
     return this.http.post(this.URL + 'updateNotes', data);
   }
-
+  deleteNotePermanently(noteid) {
+    return this.http.get(this.URL + 'deleteNotePermanently/' + noteid);
+  }
 }

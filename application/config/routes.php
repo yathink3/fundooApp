@@ -69,11 +69,12 @@ $route['note/updateNotecolor'] = 'FundooNotes/updateNotecolor';
 $route['note/updateNoteReminder'] = 'FundooNotes/updateNoteReminder';
 $route['note/archievenote'] = 'FundooNotes/archievenoteSet';
 $route['note/addTrashnote'] = 'FundooNotes/addTrashnote';
-
+$route['note/deleteNotePermanently/(:any)'] = 'FundooNotes/deleteNotePermanently/$1';
 
 
 $route['label/createlabel'] = 'FundooLabels/createLabel';
 $route['label/getAllLabels/(:any)'] = 'FundooLabels/getAllLabels/$1';
-
+$route['label/updatelabel'] = 'FundooLabels/updatelabel';
 $route['label/addNoteLabel'] = 'FundooLabels/addNoteLabel';
 $route['label/removeNoteLabel'] = 'FundooLabels/removeNoteLabel';
+$route['label/deletelabel/(:any)'] = 'FundooLabels/deletelabel/$1';

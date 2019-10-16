@@ -68,7 +68,7 @@ class FundooNotesService extends CI_Controller
 
     public function getAllNotes($userid)
     {
-        $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE user_id=:userid AND isArchieve=false AND isTrash=false  ORDER BY created DESC');
+        $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE user_id=:userid  ORDER BY created DESC');
         $stmt->execute(['userid' => $userid]);
         if ($result = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
             $tempresults = $result;
@@ -81,12 +81,19 @@ class FundooNotesService extends CI_Controller
 
     public function getOneNote($id)
     {
-        $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE id=:id AND isArchieve=false AND isTrash=false ');
+        $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE id=:id  ');
         $stmt->execute(['id' => $id]);
         if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result['labels'] = $this->fetchlabel($id);
             return ['status' => 200, "message" => "Note sent successfully", "data" => $result];
         } else return ['status' => 503, "message" => "got error when fetching data"];
+    }
+    public function deleteNotePermanently($id)
+    {
+        $query = 'DELETE FROM notes WHERE id=:id';
+        if ($this->db->conn_id->prepare($query)->execute(['id' => $id])) {
+            return ['status' => 200, "message" => "note deleted permanent succefully"];
+        } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
     }
     public function fetchlabel($noteid)
     {

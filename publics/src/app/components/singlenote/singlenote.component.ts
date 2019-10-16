@@ -4,10 +4,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { NotesService } from '../../services/notes/notes.service';
 import { LabelsService } from '../../services/labels/labels.service';
 const dateFormat = require('dateformat');
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+TimeAgo.addLocale(en);
+const timeAgo = new TimeAgo('en-US');
 @Component({
   selector: 'app-singlenote',
   templateUrl: './singlenote.component.html',
-  styleUrls: ['./singlenote.component.css']
+  styleUrls: ['./singlenote.component.scss']
 })
 export class SinglenoteComponent implements OnInit {
   colorPalette;
@@ -15,6 +19,7 @@ export class SinglenoteComponent implements OnInit {
   labeldata;
   userid;
   constructor(private svc: NotesService, private lsvc: LabelsService, private dialogRef: MatDialogRef<SinglenoteComponent>,
+    // tslint:disable-next-line: align
     @Inject(MAT_DIALOG_DATA) private data) {
     this.itemdata = this.data.itemdataa;
     this.labeldata = this.data.labeldataa;
@@ -24,6 +29,9 @@ export class SinglenoteComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+  reminderPrint(reminder) {
+    return timeAgo.format(new Date(reminder));
   }
   stopPropagation(event) {
     event.stopPropagation();
@@ -69,10 +77,19 @@ export class SinglenoteComponent implements OnInit {
         });
   }
   archievenote() {
-    this.updateData({ istrash: true });
+    this.dialogRef.close({ archieve: true });
+  }
+  unarchievenote() {
+    this.dialogRef.close({ archieve: false });
   }
   addTrashnote() {
-    this.updateData({ isarchieve: true });
+    this.dialogRef.close({ trash: true });
+  }
+  restoreTrashnote() {
+    this.dialogRef.close({ trash: false });
+  }
+  deleteNotePermanently() {
+    this.dialogRef.close({ delete: true });
   }
   addnewlabel(newlabel) {
     console.log(newlabel);
@@ -140,10 +157,6 @@ export class SinglenoteComponent implements OnInit {
             console.log(error.error.message, ':', error.error);
           });
     }
-  }
-
-  updateData({ istrash = false, isarchieve = false }) {
-    this.dialogRef.close({ trash: istrash, archieve: isarchieve });
   }
   updatenote() {
     this.dialogRef.close();

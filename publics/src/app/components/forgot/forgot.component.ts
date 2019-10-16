@@ -7,7 +7,7 @@ import { UsersService } from '../../services/users/users.service';
 @Component({
   selector: 'app-forgot',
   templateUrl: './forgot.component.html',
-  styleUrls: ['./forgot.component.css']
+  styleUrls: ['./forgot.component.scss']
 })
 export class ForgotComponent implements OnInit {
   fogotForm: FormGroup;

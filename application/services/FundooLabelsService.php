@@ -62,7 +62,7 @@ class FundooLabelsService extends CI_Controller
         $query = 'INSERT INTO noteslabels (note_id,label_id,created) VALUES (:note_id,:label_id,:created)';
         if ($this->db->conn_id->prepare($query)->execute($labelsData)) {
             return ['status' => 200, "message" => "note label added succefully"];
-        } else return ['status' => 404, "message" => "Some problems occurred, please try again."];
+        } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
     }
 
     public function removeNoteLabel($labelsData)
@@ -71,7 +71,21 @@ class FundooLabelsService extends CI_Controller
         WHERE id IN (
          SELECT implicitTemp.id from (SELECT id FROM noteslabels WHERE label_id=:label_id AND note_id=:note_id) implicitTemp)';
         if ($this->db->conn_id->prepare($query)->execute($labelsData)) {
-            return ['status' => 200, "message" => "note removed succefully"];
-        } else return ['status' => 404, "message" => "Some problems occurred, please try again."];
+            return ['status' => 200, "message" => "notelabel removed succefully"];
+        } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
+    }
+    public function updatelabel($labelsData)
+    {
+        $stmt = $this->db->conn_id->prepare('UPDATE userlabels SET label=:label WHERE id=:id');
+        if ($stmt->execute($labelsData))
+            return ['status' => 200, "message" => "label content updated"];
+        else return ['status' => 503, "message" => "label content not updated"];
+    }
+    public function deletelabel($labelid)
+    {
+        $query = 'DELETE FROM userlabels WHERE id=:id';
+        if ($this->db->conn_id->prepare($query)->execute(['id' => $labelid])) {
+            return ['status' => 200, "message" => "label deleted succefully"];
+        } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
     }
 }

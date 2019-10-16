@@ -1,4 +1,8 @@
 <div [className]="isgrid?'gridview':'listview'" cdkDropList (cdkDropListDropped)="drop($event)">
+    <div *ngIf="items.length==0" style="margin-top: 40px; display: flex; flex-direction: column;align-items: center;">
+        <img style="height:80px;width:80px;" src="../../../assets/images/empty.png">
+        <span>No results</span>
+    </div>
     <mat-card *ngFor="let item of items; let notetempid = index" [ngClass]="isgrid?'gridnote':'listnote'" cdkDrag
         (mouseenter)="item.hover=true" (mouseleave)="item.hover=mouseleave(item.hover)"
         [style.background-color]="colorPalette[item.color_id]['colorCode']">
@@ -7,9 +11,9 @@
                 <h4 class="title">{{item.title}}</h4>
             </div>
             <div style="margin-left: auto; width: 28px;">
-                <button (click)="personpin()" mat-icon-button matTooltip="pin note" *ngIf="item.hover">
-                    <img *ngIf="item.isPin==0" src="../../../assets/images/pin_outlined.svg">
-                    <img *ngIf="item.isPin==1" src="../../../assets/images/pin_filled.svg">
+                <button (click)="personpin()" mat-icon-button *ngIf="item.hover && item.isTrash=='0'">
+                    <img *ngIf="item.isPin==0" matTooltip="pin note" src="../../../assets/images/pin_outlined.svg">
+                    <img *ngIf="item.isPin==1" matTooltip="unpin note" src="../../../assets/images/pin_filled.svg">
                 </button>
             </div>
         </div>
@@ -17,8 +21,11 @@
         <div style="margin-right:auto;margin-top: 10px;">
             <mat-chip-list style="margin-bottom: -2px" class="mat-chip-list-stacked" *ngIf="item.reminder"
                 aria-orientation=" vertical">
-                <mat-chip>{{item.reminder}}
-                    <mat-icon matChipRemove (click)="removereminder(notetempid,item.id)">cancel</mat-icon>
+                <mat-chip matTooltip="{{item.reminder}}">
+                    <mat-icon>alarm</mat-icon>
+                    {{reminderPrint(item.reminder)}}
+                    <mat-icon matChipRemove *ngIf="item.isTrash=='0'" (click)="removereminder(notetempid,item.id)">
+                        cancel</mat-icon>
                 </mat-chip>
             </mat-chip-list>
         </div>
@@ -28,98 +35,115 @@
             <mat-chip-list aria-orientation="vertical">
                 <mat-chip style="margin-bottom: 0px;" *ngFor="let label_temp of item.labels; let templabelid = index">
                     {{label_temp}}
-                    <mat-icon matChipRemove (click)="removelabel(notetempid,item.id,templabelid)">cancel</mat-icon>
+                    <mat-icon matChipRemove *ngIf="item.isTrash=='0'"
+                        (click)="removelabel(notetempid,item.id,templabelid)">cancel</mat-icon>
                 </mat-chip>
             </mat-chip-list>
         </div>
-        <div style="width: 228px;height: 23px;margin-right: auto;    margin-top: auto;">
-            <button mat-icon-button style="margin-left: -13px;" matTooltip="reminder note" *ngIf="item.hover"
-                (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()" [matMenuTriggerFor]="rem"
-                aria-label="Toggle menu">
-                <i class="material-icons-outlined">add_alert</i>
-            </button>
-            <mat-menu #rem="matMenu">
-                <span style="margin-left:20px">Reminder</span>
-                <span style="margin-left:100%"></span>
-                <div mat-menu-item>
-                    <mat-icon>alarm_add</mat-icon>
-                    <mat-form-field class="demo-full-width">
-                        <input matInput [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="tx_date"
-                            autocomplete="off" placeholder="Choose date and time">
-                        <owl-date-time #dt1></owl-date-time>
-                    </mat-form-field>
-                </div>
-                <button style="margin-left:185px" mat-button
-                    (click)="updatereminder(tx_date,notetempid,item.id)">save</button>
-            </mat-menu>
-            <button mat-icon-button *ngIf="item.hover" matTooltip="colloborate" [matMenuTriggerFor]="add_person"
-                aria-label="Toggle menu" (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()">
-                <i class="material-icons-outlined">person_add</i>
-            </button>
-            <mat-menu #add_person="matMenu">
-                <span style="margin-left:20px">Add Person</span>
-                <span style="margin-left:100%"></span>
-                <div mat-menu-item>
-                    <mat-icon>alarm_add</mat-icon>
-                </div>
-                <button style="margin-left:185px" mat-button (click)="savepersons()">save</button>
-            </mat-menu>
-            <button mat-icon-button *ngIf="item.hover" matTooltip="color note" [matMenuTriggerFor]="colr"
-                (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()" aria-label="Toggle menu">
-                <i class="material-icons-outlined">color_lens</i>
-            </button>
-            <mat-menu #colr="matMenu">
-                <span style="margin-left:20px">Color</span>
-                <div class="colorpalette-card">
-                    <div *ngFor="let colr of colorPalette; let colorid = index">
-                        <button mat-icon-button matTooltip="{{colr.name}}" [style.background-color]="colr.colorCode"
-                            (click)="updatecolor(colorid,notetempid,item.id)" (mouseenter)="colr.hover=true"
-                            [ngClass]="(colr.hover||item.color_id==colorid)?'colorbold':''"
-                            (mouseleave)="colr.hover=false">
-                            <mat-icon *ngIf=" item.color_id==colorid" class="icon">done</mat-icon>
-                        </button>
-                    </div>
-                </div>
-            </mat-menu>
-            <button mat-icon-button matTooltip="add image" *ngIf="item.hover">
-                <i class="material-icons-outlined" (click)="file.click()">insert_photo</i>
-                <input style="display: none;" type="file" #file (change)="onSelectImage($event, '01')" />
-            </button>
-            <button mat-icon-button matTooltip="archieve note" *ngIf="item.hover"
-                (click)="archievenote(notetempid,item.id)">
-                <i class="material-icons-outlined">archive</i>
-            </button>
-            <button mat-icon-button style="margin-left: -9px;" (click)="menuclicked()"
-                (menuClosed)="item.hover=menuClosed()" *ngIf="item.hover" matTooltip="more" [matMenuTriggerFor]="more"
-                aria-label="Toggle menu">
-                <i class="material-icons-outlined">more_vert</i>
-            </button>
-            <mat-menu #more="matMenu">
-                <button mat-menu-item (click)="addTrashnote(notetempid,item.id)">
-                    <mat-icon>delete</mat-icon>
-                    <span>Delete Note</span>
+        <div style="width: 228px;height: 23px;margin-right: auto; margin-top: auto;">
+            <div *ngIf="item.isTrash=='0'">
+                <button mat-icon-button style="margin-left: -13px;" matTooltip="reminder note" *ngIf="item.hover"
+                    (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()" [matMenuTriggerFor]="rem"
+                    aria-label="Toggle menu">
+                    <i class="material-icons-outlined">add_alert</i>
                 </button>
-                <button mat-menu-item [matMenuTriggerFor]="labels" aria-label="Toggle menu">
-                    <mat-icon>label</mat-icon>
-                    <span>Add label</span>
-                </button>
-                <mat-menu #labels="matMenu">
-                    <div mat-menu-item (click)="stopPropagation($event)">
-                        <mat-form-field style="width:120px">
-                            <input matInput [(ngModel)]="newlabel" autocomplete="off" placeholder="Choose label">
+                <mat-menu #rem="matMenu">
+                    <span style="margin-left:20px">Reminder</span>
+                    <span style="margin-left:100%"></span>
+                    <div mat-menu-item>
+                        <mat-icon>alarm_add</mat-icon>
+                        <mat-form-field class="demo-full-width">
+                            <input matInput [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="tx_date"
+                                autocomplete="off" placeholder="Choose date and time">
+                            <owl-date-time #dt1></owl-date-time>
                         </mat-form-field>
-                        <mat-icon style="margin-right:-8px" matTooltip="create label" (click)="addnewlabel()">
-                            done_outline</mat-icon>
                     </div>
-                    <div *ngFor="let labele of labelsData; let labeleid = index">
-                        <div mat-menu-item (click)="stopPropagation($event)">
-                            <mat-checkbox color="primary" #checkbox [ngModel]="item.labels.includes(labele.label)"
-                                (change)='addlabel(notetempid,item.id,labele,checkbox.checked)'>{{labele.label}}
-                            </mat-checkbox>
+                    <button style="margin-left:185px" mat-button
+                        (click)="updatereminder(tx_date,notetempid,item.id)">save</button>
+                </mat-menu>
+                <button mat-icon-button *ngIf="item.hover" matTooltip="colloborate" [matMenuTriggerFor]="add_person"
+                    aria-label="Toggle menu" (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()">
+                    <i class="material-icons-outlined">person_add</i>
+                </button>
+                <mat-menu #add_person="matMenu">
+                    <span style="margin-left:20px">Add Person</span>
+                    <span style="margin-left:100%"></span>
+                    <div mat-menu-item>
+                        <mat-icon>alarm_add</mat-icon>
+                    </div>
+                    <button style="margin-left:185px" mat-button (click)="savepersons()">save</button>
+                </mat-menu>
+                <button mat-icon-button *ngIf="item.hover" matTooltip="color note" [matMenuTriggerFor]="colr"
+                    (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()" aria-label="Toggle menu">
+                    <i class="material-icons-outlined">color_lens</i>
+                </button>
+                <mat-menu #colr="matMenu">
+                    <span style="margin-left:20px">Color</span>
+                    <div class="colorpalette-card">
+                        <div *ngFor="let colr of colorPalette; let colorid = index">
+                            <button mat-icon-button matTooltip="{{colr.name}}" [style.background-color]="colr.colorCode"
+                                (click)="updatecolor(colorid,notetempid,item.id)" (mouseenter)="colr.hover=true"
+                                [ngClass]="(colr.hover||item.color_id==colorid)?'colorbold':''"
+                                (mouseleave)="colr.hover=false">
+                                <mat-icon *ngIf=" item.color_id==colorid" class="icon">done</mat-icon>
+                            </button>
                         </div>
                     </div>
                 </mat-menu>
-            </mat-menu>
+                <button mat-icon-button matTooltip="add image" *ngIf="item.hover">
+                    <i class="material-icons-outlined" (click)="file.click()">insert_photo</i>
+                    <input style="display: none;" type="file" #file (change)="onSelectImage($event, '01')" />
+                </button>
+                <button mat-icon-button matTooltip="archive note" *ngIf="item.hover && item.isArchieve == '0'"
+                    (click)="archievenote(notetempid,item.id)">
+                    <i class="material-icons-outlined">archive</i>
+                </button>
+                <button mat-icon-button matTooltip="unarchive note" *ngIf="item.hover && item.isArchieve == '1'"
+                    (click)="unarchievenote(notetempid,item.id)">
+                    <i class="material-icons-outlined">unarchive</i>
+                </button>
+                <button mat-icon-button style="margin-left: -9px;" (click)="menuclicked()"
+                    (menuClosed)="item.hover=menuClosed()" *ngIf="item.hover" matTooltip="more"
+                    [matMenuTriggerFor]="more" aria-label="Toggle menu">
+                    <i class="material-icons-outlined">more_vert</i>
+                </button>
+                <mat-menu #more="matMenu">
+                    <button mat-menu-item (click)="addTrashnote(notetempid,item.id)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Delete Note</span>
+                    </button>
+                    <button mat-menu-item [matMenuTriggerFor]="labels" aria-label="Toggle menu">
+                        <mat-icon>label</mat-icon>
+                        <span>Add label</span>
+                    </button>
+                    <mat-menu #labels="matMenu">
+                        <div mat-menu-item (click)="stopPropagation($event)">
+                            <mat-form-field style="width:120px">
+                                <input matInput [(ngModel)]="newlabel" autocomplete="off" placeholder="Choose label">
+                            </mat-form-field>
+                            <mat-icon style="margin-right:-8px" matTooltip="create label" (click)="addnewlabel()">
+                                done_outline</mat-icon>
+                        </div>
+                        <div *ngFor="let labele of labelsData; let labeleid = index">
+                            <div mat-menu-item (click)="stopPropagation($event)">
+                                <mat-checkbox color="primary" #checkbox [ngModel]="item.labels.includes(labele.label)"
+                                    (change)='addlabel(notetempid,item.id,labele,checkbox.checked)'>{{labele.label}}
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                    </mat-menu>
+                </mat-menu>
+            </div>
+            <div *ngIf="item.isTrash=='1'">
+                <button mat-icon-button matTooltip="delete note permanently" *ngIf="item.hover"
+                    (click)="deleteNotePermanently(notetempid, item.id)">
+                    <i class="material-icons-outlined">delete_forever</i>
+                </button>
+                <button mat-icon-button matTooltip="restore from trash" *ngIf="item.hover"
+                    (click)="restoreTrashnote(notetempid, item.id)">
+                    <i class="material-icons-outlined">restore_from_trash</i>
+                </button>
+            </div>
         </div>
     </mat-card>
 </div>

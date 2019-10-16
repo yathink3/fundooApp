@@ -65,7 +65,11 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
-
+    public function deleteNotePermanently($id){
+        $responce = $this->services->deleteNotePermanently($id);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
     public function updateNotes()
     {
         $data = json_decode(file_get_contents("php://input"));

@@ -1,21 +1,24 @@
 <div class="singlenote" [style.background-color]="colorPalette[itemdata.color_id]['colorCode']">
     <div style="display: flex;width: 97%">
         <textarea matInput matTextareaAutosize tabIndex="1" class="noteinput1" [(ngModel)]="itemdata.title"
-            (keyup.enter)="medri()" matInput placeholder="Title" autocomplete="off"></textarea>
-        <button mat-icon-button matTooltip="pin" style="margin-right: -30px;margin-top: -11px;">
-            <img *ngIf="itemdata.isPin==0" src="../../../assets/images/pin_outlined.svg">
-            <img *ngIf="itemdata.isPin==1" src="../../../assets/images/pin_filled.svg">
+            (keyup.enter)="medri()" [readonly]="itemdata.isTrash=='1'" matInput placeholder="Title"
+            autocomplete="off"></textarea>
+        <button mat-icon-button *ngIf="itemdata.isTrash=='0'" style="margin-right: -30px;margin-top: -11px;">
+            <img *ngIf="itemdata.isPin==0" matTooltip="pin note" src="../../../assets/images/pin_outlined.svg">
+            <img *ngIf="itemdata.isPin==1" matTooltip="unpin note" src="../../../assets/images/pin_filled.svg">
         </button>
     </div>
     <div style="display: flex;width: 97%;">
         <textarea matInput matTextareaAutosize tabIndex="2" [(ngModel)]="itemdata.description" placeholder="Take a note"
-            autocomplete="off"></textarea>
+            autocomplete="off" [readonly]="itemdata.isTrash=='1'"></textarea>
 
     </div>
     <div style="margin-right:auto;margin-top: 10px;">
         <mat-chip-list style="margin-bottom: -2px" aria-orientation=" vertical" *ngIf="itemdata.reminder">
-            <mat-chip>{{itemdata.reminder}}
-                <mat-icon matChipRemove (click)="removereminder()">cancel</mat-icon>
+            <mat-chip matTooltip="{{itemdata.reminder}}">
+                <mat-icon>alarm</mat-icon>
+                {{reminderPrint(itemdata.reminder)}}
+                <mat-icon matChipRemove *ngIf="itemdata.isTrash=='0'" (click)="removereminder()">cancel</mat-icon>
             </mat-chip>
         </mat-chip-list>
     </div>
@@ -25,14 +28,15 @@
         <mat-chip-list aria-orientation="vertical">
             <mat-chip style="margin-bottom: 0px;" *ngFor="let label_temp of itemdata.labels; let templabelid = index">
                 {{label_temp}}
-                <mat-icon matChipRemove (click)="removelabel(templabelid)">cancel</mat-icon>
+                <mat-icon matChipRemove *ngIf="itemdata.isTrash=='0'" (click)=" removelabel(templabelid)">cancel
+                </mat-icon>
             </mat-chip>
         </mat-chip-list>
     </div>
 
     <div style="height: 23px;margin-right: auto;margin-top: auto;display: flex;
     justify-content: space-between;">
-        <div style="min-width: 220px;">
+        <div style="min-width: 220px;" *ngIf="itemdata.isTrash=='0'">
             <button mat-icon-button style="margin-left: -13px;" matTooltip="reminder note" [matMenuTriggerFor]="rem"
                 aria-label="Toggle menu">
                 <i class="material-icons-outlined">add_alert</i>
@@ -81,8 +85,13 @@
                 <i class="material-icons-outlined" (click)="file.click()">insert_photo</i>
                 <input style="display: none;" type="file" #file (change)="onSelectImage($event, '01')" />
             </button>
-            <button mat-icon-button matTooltip="archieve note" (click)="archievenote()">
+            <button mat-icon-button matTooltip="archieve note" *ngIf="itemdata.isArchieve == '0'"
+                (click)="archievenote()">
                 <i class="material-icons-outlined">archive</i>
+            </button>
+            <button mat-icon-button matTooltip="unarchieve note" *ngIf="itemdata.isArchieve == '1'"
+                (click)="unarchievenote()">
+                <i class="material-icons-outlined">unarchive</i>
             </button>
             <button mat-icon-button style="margin-left: -9px;" matTooltip="more" [matMenuTriggerFor]="more"
                 aria-label="Toggle menu">
@@ -114,8 +123,16 @@
                 </mat-menu>
             </mat-menu>
         </div>
-        <div style="margin-right: -17px;margin-top: 3px;">
+        <div style="margin-right: -17px;margin-top: 3px;" *ngIf="itemdata.isTrash=='0'">
             <button mat-button (click)="updatenote()">close</button>
+        </div>
+        <div *ngIf="itemdata.isTrash=='1'">
+            <button mat-icon-button matTooltip="delete note permanently" (click)="deleteNotePermanently()">
+                <i class="material-icons-outlined">delete_forever</i>
+            </button>
+            <button mat-icon-button matTooltip="restore from trash" (click)="restoreTrashnote()">
+                <i class="material-icons-outlined">restore_from_trash</i>
+            </button>
         </div>
     </div>
 </div>

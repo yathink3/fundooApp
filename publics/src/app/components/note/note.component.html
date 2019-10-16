@@ -30,7 +30,9 @@
     </div>
     <div style="margin-right: auto;" *ngIf="rem">
         <mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
-            <mat-chip>{{rem}}
+            <mat-chip matTooltip="{{rem}}">
+                <mat-icon>alarm</mat-icon>
+                {{reminderPrint(rem)}}
                 <mat-icon matChipRemove (click)="removereminder()">cancel</mat-icon>
             </mat-chip>
         </mat-chip-list>

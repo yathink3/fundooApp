@@ -5,13 +5,16 @@ import { Router } from '@angular/router';
 import { GetAllNoteComponent } from '../get-all-note/get-all-note.component';
 import { MatSnackBar } from '@angular/material';
 import { LabelsService } from 'src/app/services/labels/labels.service';
-import { delay } from 'q';
 const dateFormat = require('dateformat');
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+TimeAgo.addLocale(en);
+const timeAgo = new TimeAgo('en-US');
 @Component({
   providers: [GetAllNoteComponent],
   selector: 'app-note',
   templateUrl: './note.component.html',
-  styleUrls: ['./note.component.css']
+  styleUrls: ['./note.component.scss']
 })
 export class NoteComponent implements OnInit {
   @Input() notes;
@@ -41,6 +44,9 @@ export class NoteComponent implements OnInit {
   savereminder(date) {
     this.rem = date ? dateFormat(date, 'yyyy-mm-dd HH:MM:ss') : null;
     console.log(this.rem);
+  }
+  reminderPrint(reminder) {
+    return timeAgo.format(new Date(reminder));
   }
   removereminder() {
     this.rem = null;
@@ -128,12 +134,14 @@ export class NoteComponent implements OnInit {
     }
   }
 
-  getOnenote(noteid) {
+  getOnenote(noteid, isarchieve) {
     this.svc.getOneNote(noteid).subscribe(result => {
       const temp = JSON.stringify(result);
       const results = JSON.parse(temp);
       console.log(results.message, ':', results);
-      this.notes.unshift(results.data);
+      if (!isarchieve) {
+        this.notes.unshift(results.data);
+      }
       this.notelabels = [];
     },
       error => {
@@ -183,7 +191,7 @@ export class NoteComponent implements OnInit {
           console.log(results.message, ':', results);
           this.addlabelstonotes(results.id);
           setTimeout(() => {
-            this.getOnenote(results.id);
+            this.getOnenote(results.id, isarchieve);
           }, 500);
         },
           error => {

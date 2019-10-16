@@ -9,10 +9,14 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { SinglenoteComponent } from '../singlenote/singlenote.component';
 import { filter } from 'rxjs/operators';
 const dateFormat = require('dateformat');
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+TimeAgo.addLocale(en);
+const timeAgo = new TimeAgo('en-US');
 @Component({
   selector: 'app-get-all-note',
   templateUrl: './get-all-note.component.html',
-  styleUrls: ['./get-all-note.component.css'],
+  styleUrls: ['./get-all-note.component.scss'],
 })
 export class GetAllNoteComponent implements OnInit {
   dialoguenote: MatDialogRef<SinglenoteComponent>;
@@ -21,11 +25,13 @@ export class GetAllNoteComponent implements OnInit {
   @Input() items;
   @Input() colorPalette;
   @Input() userData;
+  @Input() pointer;
   isMatMenuOpen = false;
   grid = true;
   newlabel = '';
   constructor(private svc: NotesService, private lsvc: LabelsService, private route: Router,
-    private router: ActivatedRoute, private snackBar: MatSnackBar, private dialog: MatDialog) {
+      // tslint:disable-next-line: align
+      private router: ActivatedRoute, private snackBar: MatSnackBar, private dialog: MatDialog) {
   }
   ngOnInit() {
   }
@@ -35,6 +41,9 @@ export class GetAllNoteComponent implements OnInit {
     } else if (data === true) {
       return false;
     }
+  }
+  reminderPrint(reminder) {
+    return timeAgo.format(new Date(reminder));
   }
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.items, event.previousIndex, event.currentIndex);
@@ -101,9 +110,55 @@ export class GetAllNoteComponent implements OnInit {
           console.log(error.error.message, ':', error.error);
         });
   }
+  unarchievenote(noteindex, noteid) {
+    this.items.splice(noteindex, 1);
+    this.svc.archievenote({ note_id: noteid, isArchieve: false })
+      .subscribe(result => {
+        const temp = JSON.stringify(result);
+        const results = JSON.parse(temp);
+        console.log(results.message, ':', results);
+        this.snackBar.open('note unarchieved', 'ok', {
+          duration: 2000,
+        });
+      },
+        error => {
+          console.log(error.error.message, ':', error.error);
+        });
+  }
   addTrashnote(noteindex, noteid) {
     this.items.splice(noteindex, 1);
     this.svc.addTrashnote({ note_id: noteid, isTrash: true })
+      .subscribe(result => {
+        const temp = JSON.stringify(result);
+        const results = JSON.parse(temp);
+        console.log(results.message, ':', results);
+        this.snackBar.open(results.message, 'ok', {
+          duration: 2000,
+        });
+      },
+        error => {
+          console.log(error.error.message, ':', error.error);
+        });
+  }
+
+  restoreTrashnote(noteindex, noteid) {
+    this.items.splice(noteindex, 1);
+    this.svc.addTrashnote({ note_id: noteid, isTrash: false })
+      .subscribe(result => {
+        const temp = JSON.stringify(result);
+        const results = JSON.parse(temp);
+        console.log(results.message, ':', results);
+        this.snackBar.open('note restored', 'ok', {
+          duration: 2000,
+        });
+      },
+        error => {
+          console.log(error.error.message, ':', error.error);
+        });
+  }
+  deleteNotePermanently(noteindex, noteid) {
+    this.items.splice(noteindex, 1);
+    this.svc.deleteNotePermanently(noteid)
       .subscribe(result => {
         const temp = JSON.stringify(result);
         const results = JSON.parse(temp);
@@ -205,10 +260,20 @@ export class GetAllNoteComponent implements OnInit {
       .subscribe(item => {
         this.updatenotesdata(itemdata, olddata);
         if (item) {
-          if (item.trash) {
-            this.archievenote(noteindex, itemdata.id);
-          } else if (item.archieve) {
+          if (item.trash === true) {
             this.addTrashnote(noteindex, itemdata.id);
+          }
+          if (item.trash === false) {
+            this.restoreTrashnote(noteindex, itemdata.id);
+          }
+          if (item.archieve === true) {
+            this.archievenote(noteindex, itemdata.id);
+          }
+          if (item.archieve === false) {
+            this.unarchievenote(noteindex, itemdata.id);
+          }
+          if (item.delete === true) {
+            this.deleteNotePermanently(noteindex, itemdata.id);
           }
         }
       });
