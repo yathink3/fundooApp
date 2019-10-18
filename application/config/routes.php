@@ -59,7 +59,8 @@ $route['user/registration'] = 'FundooAccounts/registration';
 $route['user/validateaccount/(:any)'] = 'FundooAccounts/validationAccount/$1';
 $route['user/forgot'] = 'FundooAccounts/forgot';
 $route['user/forgotPassword/(:any)'] = 'FundooAccounts/reset/$1';
-
+$route['user/sociallogin'] = 'FundooAccounts/sociallogin';
+$route['user/uploadProfilePic'] = 'FundooAccounts/uploadProfilePic';
 
 $route['note/createnote'] = 'FundooNotes/createNote';
 $route['note/getAllNotes/(:any)'] = 'FundooNotes/getAllNotes/$1';

@@ -55,8 +55,29 @@ class FundooAccounts
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
-
-
+    public function sociallogin()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $userData = array();
+        $userData['firstname'] = $data->firstname;
+        $userData['lastname'] = $data->lastname;
+        $userData['email'] = $data->email;
+        $userData['password'] = $data->password;
+        $userData['profilepic'] = $data->profilepic;
+        $responce = $this->services->sociallogin($userData);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
+    public function uploadProfilePic()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $profiledata = array();
+        $profiledata['id'] = $data->id;
+        $profiledata['profilepic'] = $data->profilepic;
+        $responce = $this->services->uploadProfilePic($profiledata);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
     /**
      * @param:$token
      * @method:validationAccount()

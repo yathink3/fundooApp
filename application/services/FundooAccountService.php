@@ -12,6 +12,9 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 require APPPATH . 'rabbitmq/sender.php';
+require APPPATH . 'third_party/cloudinary/Cloudinary.php';
+require APPPATH . 'third_party/cloudinary/Uploader.php';
+require APPPATH . 'third_party/cloudinary/Api.php';
 class FundooAccountService extends CI_Controller
 {
 
@@ -109,7 +112,22 @@ class FundooAccountService extends CI_Controller
         } else return ['status' => 404, "message" => "email already exist."];
     }
 
-
+    public function sociallogin($userData)
+    {
+        if ($result = $this->isEmailPresent($userData['email'])) {
+            return ['status' => 200, "message" => "login successful", "data" => $result];
+        } else {
+            if (!array_key_exists('created', $userData))  $userData['created'] = date("Y-m-d H:i:s");
+            if (!array_key_exists('modified', $userData))  $userData['modified'] = date("Y-m-d H:i:s");
+            $userData['acc_status'] = TRUE;
+            $query = 'INSERT INTO user (firstname,lastname,email,password,acc_status,created,modified,profilepic) VALUES (:firstname,:lastname,:email,:password,:acc_status,:created,:modified,:profilepic)';
+            if ($this->db->conn_id->prepare($query)->execute($userData)) {
+                if ($result = $this->isEmailPresent($userData['email'])) {
+                    return ['status' => 200, "message" => "User account has been created token generated && login successful", "data" => $result];
+                }
+            } else return ['status' => 503, "message" => "Some problems occurred, please try again later"];
+        }
+    }
     /**
      * @param:$tuserData
      * @method:validateAccount()
@@ -161,5 +179,21 @@ class FundooAccountService extends CI_Controller
             if ($stmt->execute($userData))  return ['status' => 200, "message" => "password has been updated successfully."];
             else return ['status' => 503, "message" => "Some problems occurred, please try again."];
         } else return ['status' => 404, "message" => "unknown person"];
+    }
+    public function uploadProfilePic($profiledata)
+    {
+        \Cloudinary::config(array(
+            "cloud_name" => "dfifkw6w6",
+            "api_key" => "316584133517813",
+            "api_secret" => "KnSWIjCpyCJwpnL3YwxRXTEZAlA",
+            "secure" => true
+        ));
+        $uploadurlData = \Cloudinary\Uploader::upload($profiledata['profilepic']);
+        $profiledata['profilepic'] = $uploadurlData['url'];
+        $query = "UPDATE user SET profilepic=:profilepic  WHERE id=:id";
+        $stmt = $this->db->conn_id->prepare($query);
+        if ($stmt->execute($profiledata)) {
+            return ['status' => 200, "message" => "profile pic updated", "data" => $uploadurlData['url']];
+        } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
     }
 }

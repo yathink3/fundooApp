@@ -120,3 +120,17 @@ img.example-app-icon {
   border-radius: 0 20px 20px 0;
 
 }
+
+.refresh {
+  animation: rotate-spin 1s linear;
+}
+
+@keyframes rotate-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
-  URL = 'http://localhost/fundooapp/note/';
+  URL = environment.apiUrl + 'fundooapp/note/';
   constructor(private http: HttpClient) { }
   createnote(data) {
     return this.http.post(this.URL + 'createnote', data);

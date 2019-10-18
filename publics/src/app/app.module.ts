@@ -7,6 +7,9 @@ import { CustomMaterialModule } from './material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ClickOutsideModule } from 'ng-click-outside';
+import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
+import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
+
 
 import { LoginComponent } from './components/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,6 +24,21 @@ import { GetAllNoteComponent } from './components/get-all-note/get-all-note.comp
 import { SinglenoteComponent } from './components/singlenote/singlenote.component';
 import { EditlabelComponent } from './components/editlabel/editlabel.component';
 
+
+const config = new AuthServiceConfig([
+  {
+    id: GoogleLoginProvider.PROVIDER_ID,
+    provider: new GoogleLoginProvider('1023692755245-jc3v6kt7as3e6lkspfsnu4gccj35kefd.apps.googleusercontent.com')
+  },
+  {
+    id: FacebookLoginProvider.PROVIDER_ID,
+    provider: new FacebookLoginProvider('536509143751633')
+  }
+]);
+
+export function provideConfig() {
+  return config;
+}
 
 @NgModule({
   declarations: [
@@ -45,10 +63,14 @@ import { EditlabelComponent } from './components/editlabel/editlabel.component';
     ReactiveFormsModule,
     HttpClientModule,
     DragDropModule,
-    ClickOutsideModule
+    ClickOutsideModule,
+    SocialLoginModule,
   ],
   entryComponents: [SinglenoteComponent, EditlabelComponent],
-  providers: [],
+  providers: [{
+    provide: AuthServiceConfig,
+    useFactory: provideConfig
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -37,7 +37,7 @@ export class RegisterationComponent implements OnInit {
       firstname: this.regiForm.value.FirstName,
       lastname: this.regiForm.value.LastName,
       email: this.regiForm.value.Email,
-      password: this.regiForm.value.Password
+      password: this.regiForm.value.Password,
     };
     console.log(data);
     // tslint:disable-next-line:no-debugger

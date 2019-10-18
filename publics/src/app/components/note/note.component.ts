@@ -21,6 +21,7 @@ export class NoteComponent implements OnInit {
   @Input() labelsData;
   @Input() colorPalette;
   @Input() userData;
+  @Input() notelabels;
   noteshow: boolean = true;
   opened: boolean = true;
   title: string = '';
@@ -30,7 +31,6 @@ export class NoteComponent implements OnInit {
   isPin = false;
   rem: string = null;
   ismenuopened = true;
-  notelabels = [];
   data = JSON.parse(localStorage.getItem('userData'));
   constructor(private svc: NotesService, private lsvc: LabelsService, private route: Router,
     private getnotes: GetAllNoteComponent, private snackBar: MatSnackBar) {
