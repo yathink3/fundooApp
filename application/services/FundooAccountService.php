@@ -75,7 +75,7 @@ class FundooAccountService extends CI_Controller
 
 
     /**
-     * @param:$tuserData
+     * @param:$userData
      * @method:signin()
      * @return :array of data
      */
@@ -93,7 +93,7 @@ class FundooAccountService extends CI_Controller
 
 
     /**
-     * @param:$tuserData
+     * @param:$userData
      * @method:signup()
      * @return :array of data
      */
@@ -112,6 +112,11 @@ class FundooAccountService extends CI_Controller
         } else return ['status' => 404, "message" => "email already exist."];
     }
 
+    /**
+     * @param:$userData
+     * @method:sociallogin($userData)
+     * @return :array of data
+     */
     public function sociallogin($userData)
     {
         if ($result = $this->isEmailPresent($userData['email'])) {
@@ -129,7 +134,7 @@ class FundooAccountService extends CI_Controller
         }
     }
     /**
-     * @param:$tuserData
+     * @param:$userData
      * @method:validateAccount()
      * @return :array of data
      */
@@ -149,7 +154,7 @@ class FundooAccountService extends CI_Controller
 
 
     /**
-     * @param:$tuserData
+     * @param:$userData
      * @method:forgotPassword()
      * @return :array of data
      */
@@ -180,6 +185,12 @@ class FundooAccountService extends CI_Controller
             else return ['status' => 503, "message" => "Some problems occurred, please try again."];
         } else return ['status' => 404, "message" => "unknown person"];
     }
+
+    /**
+     * @param:$userData
+     * @method:uploadProfilePic($profiledata)
+     * @return :array of data
+     */
     public function uploadProfilePic($profiledata)
     {
         \Cloudinary::config(array(

@@ -55,6 +55,11 @@ class FundooAccounts
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:social login()
+     * @return :response 
+     */
     public function sociallogin()
     {
         $data = json_decode(file_get_contents("php://input"));
@@ -68,6 +73,11 @@ class FundooAccounts
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:uploadProfilePic()
+     * @return :response 
+     */
     public function uploadProfilePic()
     {
         $data = json_decode(file_get_contents("php://input"));

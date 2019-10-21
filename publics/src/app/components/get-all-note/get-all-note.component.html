@@ -1,10 +1,12 @@
-<div [className]="isgrid?'gridview':'listview'" cdkDropList (cdkDropListDropped)="drop($event)">
+<div [className]="(!isgrid || mobileQuery.matches)?'listview':'gridview'"
+    cdkDropList (cdkDropListDropped)="drop($event)">
     <div *ngIf="items.length==0" style="margin-top: 40px; display: flex; flex-direction: column;align-items: center;">
         <img style="height:80px;width:80px;" src="../../../assets/images/empty.png">
         <span>No results</span>
     </div>
-    <mat-card *ngFor="let item of items; let notetempid = index" [ngClass]="isgrid?'gridnote':'listnote'" cdkDrag
-        (mouseenter)="item.hover=true" (mouseleave)="item.hover=mouseleave(item.hover)"
+    <mat-card *ngFor="let item of items; let notetempid = index"
+        [ngClass]="(!isgrid || mobileQuery.matches)?'listnote':'gridnote'" cdkDrag (mouseenter)="item.hover=true"
+        (mouseleave)="item.hover=mouseleave(item.hover)"
         [style.background-color]="colorPalette[item.color_id]['colorCode']">
         <div style="display: flex;margin-top: -10px;width: 100%;">
             <div (click)="openDialog(notetempid,item)" [ngStyle]="{'min-width':isgrid?'170px':'50vw'}">
@@ -90,10 +92,23 @@
                         </div>
                     </div>
                 </mat-menu>
-                <button mat-icon-button matTooltip="add image" *ngIf="item.hover">
+                <!-- <button mat-icon-button matTooltip="add image" *ngIf="item.hover">
                     <i class="material-icons-outlined" (click)="file.click()">insert_photo</i>
                     <input style="display: none;" type="file" #file (change)="onSelectImage($event, '01')" />
+                </button> -->
+                <button mat-icon-button *ngIf="item.hover" matTooltip="colloborate" [matMenuTriggerFor]="add_person"
+                    aria-label="Toggle menu" (click)="menuclicked()" (menuClosed)="item.hover=menuClosed()">
+                    <i class="material-icons-outlined">share</i>
                 </button>
+                <mat-menu #add_person="matMenu">
+                    <span style="margin-left:20px">Social share</span>
+                    <div style="width: 215px;">
+                        <share-buttons [include]="['facebook','twitter','whatsapp','email','copy']" [showText]="true"
+                            [showIcon]="false" [size]="-4" [title]="item.title"
+                            [description]="'title : '+item.title+'\ndescription : '+item.description+'\n'">
+                        </share-buttons>
+                    </div>
+                </mat-menu>
                 <button mat-icon-button matTooltip="archive note" *ngIf="item.hover && item.isArchieve == '0'"
                     (click)="archievenote(notetempid,item.id)">
                     <i class="material-icons-outlined">archive</i>

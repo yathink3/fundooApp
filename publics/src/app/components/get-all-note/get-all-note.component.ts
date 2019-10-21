@@ -21,6 +21,7 @@ const timeAgo = new TimeAgo('en-US');
 export class GetAllNoteComponent implements OnInit {
   dialoguenote: MatDialogRef<SinglenoteComponent>;
   @Input() isgrid: boolean;
+  @Input() mobileQuery;
   @Input() labelsData;
   @Input() items;
   @Input() colorPalette;
@@ -30,8 +31,8 @@ export class GetAllNoteComponent implements OnInit {
   grid = true;
   newlabel = '';
   constructor(private svc: NotesService, private lsvc: LabelsService, private route: Router,
-      // tslint:disable-next-line: align
-      private router: ActivatedRoute, private snackBar: MatSnackBar, private dialog: MatDialog) {
+    // tslint:disable-next-line: align
+    private router: ActivatedRoute, private snackBar: MatSnackBar, private dialog: MatDialog) {
   }
   ngOnInit() {
   }

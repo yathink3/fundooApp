@@ -59,17 +59,33 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:getOneNote($id)
+     * @return :response 
+     */
     public function getOneNote($id)
     {
         $responce = $this->services->getOneNote($id);
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
-    public function deleteNotePermanently($id){
+    /**
+     * @param:null
+     * @method:deleteNotePermanently($id)
+     * @return :response 
+     */
+    public function deleteNotePermanently($id)
+    {
         $responce = $this->services->deleteNotePermanently($id);
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:updateNotes()
+     * @return :response 
+     */
     public function updateNotes()
     {
         $data = json_decode(file_get_contents("php://input"));
@@ -81,6 +97,11 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:updateNotecolor()
+     * @return :response 
+     */
     public function updateNotecolor()
     {
         $data = json_decode(file_get_contents("php://input"));
@@ -91,6 +112,11 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:updateNoteReminder()
+     * @return :response 
+     */
     public function updateNoteReminder()
     {
         $data = json_decode(file_get_contents("php://input"));
@@ -101,6 +127,12 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+
+    /**
+     * @param:null
+     * @method:archievenoteSet()
+     * @return :response 
+     */
     public function  archievenoteSet()
     {
         $data = json_decode(file_get_contents("php://input"));
@@ -111,6 +143,12 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+
+    /**
+     * @param:null
+     * @method:addTrashnote()
+     * @return :response 
+     */
     public function addTrashnote()
     {
         $data = json_decode(file_get_contents("php://input"));

@@ -1,3 +1,4 @@
+declare var require: any;
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
@@ -7,6 +8,7 @@ import { UsersService } from 'src/app/services/users/users.service';
 import { LabelsService } from 'src/app/services/labels/labels.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { EditlabelComponent } from '../editlabel/editlabel.component';
+const dateFormat = require('dateformat');
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -190,6 +192,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   uploadProfilePic() {
+    console.log(this.profilepic);
     this.usvc.uploadProfilePic({ profilepic: this.profilepic, id: this.userData.id })
       .subscribe(result => {
         const temp = JSON.stringify(result);

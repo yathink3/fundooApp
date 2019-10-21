@@ -24,8 +24,8 @@ class FundooLabelsService extends CI_Controller
     }
 
     /**
-     * @param:$tuserData
-     * @method:signup()
+     * @param:$labelsData
+     * @method:createLabel($labelsData)
      * @return :array of data
      */
     public function createLabel($labelsData)
@@ -43,8 +43,8 @@ class FundooLabelsService extends CI_Controller
 
 
     /**
-     * @param: $email
-     * @method:isEmailPresent() 
+     * @param: $userid
+     * @method:getAllLabels($userid)
      * @return :bool or result
      */
     public function getAllLabels($userid)
@@ -55,7 +55,11 @@ class FundooLabelsService extends CI_Controller
             return ['status' => 200, "message" => "labels data", "data" => $result];
         else return ['status' => 503, "message" => "empty labels"];
     }
-
+    /**
+     * @param:$labelsData
+     * @method:addNoteLabel($labelsData) 
+     * @return :response
+     */
     public function addNoteLabel($labelsData)
     {
         if (!array_key_exists('created', $labelsData))  $labelsData['created'] = date("Y-m-d H:i:s");
@@ -64,7 +68,11 @@ class FundooLabelsService extends CI_Controller
             return ['status' => 200, "message" => "note label added succefully"];
         } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
     }
-
+    /**
+     * @param: $labelsData
+     * @method:removeNoteLabel($labelsData)
+     * @return :response
+     */
     public function removeNoteLabel($labelsData)
     {
         $query = 'DELETE FROM noteslabels
@@ -74,6 +82,11 @@ class FundooLabelsService extends CI_Controller
             return ['status' => 200, "message" => "notelabel removed succefully"];
         } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
     }
+    /**
+     * @param:$labelsData
+     * @method:updatelabel($labelsData)
+     * @return :response
+     */
     public function updatelabel($labelsData)
     {
         $stmt = $this->db->conn_id->prepare('UPDATE userlabels SET label=:label WHERE id=:id');
@@ -81,6 +94,11 @@ class FundooLabelsService extends CI_Controller
             return ['status' => 200, "message" => "label content updated"];
         else return ['status' => 503, "message" => "label content not updated"];
     }
+    /**
+     * @param:$labelid
+     * @method:deletelabel($labelid)
+     * @return :response
+     */
     public function deletelabel($labelid)
     {
         $query = 'DELETE FROM userlabels WHERE id=:id';

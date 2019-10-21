@@ -45,9 +45,9 @@ class FundooNotesService extends CI_Controller
 
 
     /**
-     * @param:$tuserData
-     * @method:signup()
-     * @return :array of data
+     * @param:$notesData
+     * @method:createNote($notesData)
+     * @return :response
      */
     public function createNote($notesData)
     {
@@ -61,9 +61,9 @@ class FundooNotesService extends CI_Controller
 
 
     /**
-     * @param: $email
-     * @method:isEmailPresent() 
-     * @return :bool or result
+     * @param: $userid
+     * @method:getAllNotes($userid)
+     * @return :response
      */
 
     public function getAllNotes($userid)
@@ -79,6 +79,11 @@ class FundooNotesService extends CI_Controller
         } else return ['status' => 503, "message" => "got error when fetching data"];
     }
 
+    /**
+     * @param: $id
+     * @method:getOneNote($id)
+     * @return :response
+     */
     public function getOneNote($id)
     {
         $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE id=:id  ');
@@ -88,6 +93,12 @@ class FundooNotesService extends CI_Controller
             return ['status' => 200, "message" => "Note sent successfully", "data" => $result];
         } else return ['status' => 503, "message" => "got error when fetching data"];
     }
+
+    /**
+     * @param: $id
+     * @method:deleteNotePermanently($id)
+     * @return :response
+     */
     public function deleteNotePermanently($id)
     {
         $query = 'DELETE FROM notes WHERE id=:id';
@@ -95,6 +106,12 @@ class FundooNotesService extends CI_Controller
             return ['status' => 200, "message" => "note deleted permanent succefully"];
         } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
     }
+
+    /**
+     * @param: $noteid
+     * @method:fetchlabel($noteid)
+     * @return :response
+     */
     public function fetchlabel($noteid)
     {
         $stmt = $this->db->conn_id->prepare('SELECT u.label
@@ -111,6 +128,11 @@ class FundooNotesService extends CI_Controller
             return $temp;
         } else return [];
     }
+    /**
+     * @param: $notesData
+     * @method:updateNotes($notesData)
+     * @return :response
+     */
     public function updateNotes($notesData)
     {
         $stmt = $this->db->conn_id->prepare('UPDATE notes SET title=:title,description=:description WHERE id=:noteid');
@@ -118,7 +140,11 @@ class FundooNotesService extends CI_Controller
             return ['status' => 200, "message" => "note content updated"];
         else return ['status' => 503, "message" => "note content not updated", "data" => $notesData];
     }
-
+    /**
+     * @param: $notesData
+     * @method:updateNotecolor($notesData)
+     * @return :response
+     */
     public function updateNotecolor($notesData)
     {
         $stmt = $this->db->conn_id->prepare('UPDATE notes SET color_id=:colorid  WHERE id=:noteid');
@@ -126,6 +152,11 @@ class FundooNotesService extends CI_Controller
             return ['status' => 200, "message" => "color updated"];
         else return ['status' => 503, "message" => "color not updated"];
     }
+    /**
+     * @param: $notesData
+     * @method:updateNoteReminder($notesData)
+     * @return :response
+     */
     public function updateNoteReminder($notesData)
     {
         $stmt = $this->db->conn_id->prepare('UPDATE notes SET reminder=:reminder  WHERE id=:noteid');
@@ -133,6 +164,12 @@ class FundooNotesService extends CI_Controller
             return ['status' => 200, "message" => "reminder updated"];
         else return ['status' => 503, "message" => "reminder not updated"];
     }
+
+    /**
+     * @param: $notesData
+     * @method:archievenoteSet($notesData)
+     * @return :response
+     */
     public function archievenoteSet($notesData)
     {
         $stmt = $this->db->conn_id->prepare('UPDATE notes SET isArchieve=:isArchieve  WHERE id=:noteid');
@@ -140,6 +177,12 @@ class FundooNotesService extends CI_Controller
             return ['status' => 200, "message" => "note archieved"];
         else return ['status' => 503, "message" => "note not archieved"];
     }
+
+    /**
+     * @param: $notesData
+     * @method:addTrashnote($notesData)
+     * @return :response
+     */
     public function addTrashnote($notesData)
     {
         $stmt = $this->db->conn_id->prepare('UPDATE notes SET isTrash=:isTrash  WHERE id=:noteid');

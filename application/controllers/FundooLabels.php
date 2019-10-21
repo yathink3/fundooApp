@@ -58,7 +58,7 @@ class FundooLabels
 
     /**
      * @param:null
-     * @method:createNote()
+     * @method:addNoteLabel()
      * @return :response 
      */
     public function addNoteLabel()
@@ -75,7 +75,7 @@ class FundooLabels
 
     /**
      * @param:null
-     * @method:getAllNotes()
+     * @method:removeNoteLabel()
      * @return :response 
      */
     public function removeNoteLabel()
@@ -88,6 +88,11 @@ class FundooLabels
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:updatelabel()
+     * @return :response 
+     */
     public function updatelabel()
     {
         $data = json_decode(file_get_contents("php://input"));
@@ -98,6 +103,11 @@ class FundooLabels
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:deletelabel($labelid)
+     * @return :response 
+     */
     public function deletelabel($labelid)
     {
         $responce = $this->services->deletelabel($labelid);

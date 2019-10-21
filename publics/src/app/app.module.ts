@@ -8,8 +8,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ClickOutsideModule } from 'ng-click-outside';
 import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
-import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
-
+import { GoogleLoginProvider, FacebookLoginProvider, } from 'angularx-social-login';
+import { ShareButtonsModule } from '@ngx-share/buttons';
 
 import { LoginComponent } from './components/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,7 +28,7 @@ import { EditlabelComponent } from './components/editlabel/editlabel.component';
 const config = new AuthServiceConfig([
   {
     id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider('1023692755245-jc3v6kt7as3e6lkspfsnu4gccj35kefd.apps.googleusercontent.com')
+    provider: new GoogleLoginProvider('636559597730-6fm0o7jslsjsbptgdsmag3trljeag6uv.apps.googleusercontent.com')
   },
   {
     id: FacebookLoginProvider.PROVIDER_ID,
@@ -65,6 +65,7 @@ export function provideConfig() {
     DragDropModule,
     ClickOutsideModule,
     SocialLoginModule,
+    ShareButtonsModule
   ],
   entryComponents: [SinglenoteComponent, EditlabelComponent],
   providers: [{

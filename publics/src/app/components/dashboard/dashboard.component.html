@@ -39,7 +39,7 @@
                 </div>
             </button>
             <mat-menu #menu="matMenu">
-                <div style="width: 250px;" (click)="stopPropagation($event)">
+                <div (click)="stopPropagation($event)">
                     <div style="display: flex;margin-left: 8px;">
                         <div matTooltip="add profilepic">
                             <img style="width:70px;height:70px; border-radius:40px 40px 40px 40px;" *ngIf="profilepic"
@@ -130,9 +130,9 @@
                 </app-note>
             </div>
             <div style="margin-bottom:30px">
-                <app-get-all-note [isgrid]="isgrid" [className]="isgrid?'contentsNotesgrid':'contentsNoteslist'"
-                    [labelsData]="labelsData" [items]="items" [colorPalette]="colorPalette" [userData]="userData"
-                    [pointer]="pointer">
+                <app-get-all-note [mobileQuery]="mobileQuery" [isgrid]="isgrid"
+                    [className]="isgrid?'contentsNotesgrid':'contentsNoteslist'" [labelsData]="labelsData"
+                    [items]="items" [colorPalette]="colorPalette" [userData]="userData" [pointer]="pointer">
                 </app-get-all-note>
             </div>
         </mat-sidenav-content>

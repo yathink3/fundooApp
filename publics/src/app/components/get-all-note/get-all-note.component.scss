@@ -1,5 +1,5 @@
 .gridview {
-  width: 78vw;
+  width: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -8,6 +8,7 @@
 }
 
 .listview {
+  width: auto;
   justify-content: space-around;
   max-width: 800px;
 }
@@ -16,6 +17,8 @@
   width: 200px;
   display: flex;
   margin-top: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
   border-radius: 6px;
   min-width: 190px;
   height: auto;
@@ -32,9 +35,10 @@
 }
 
 .listnote {
-  width: 70vw;
   display: flex;
   margin-top: 40px;
+  margin-left: 15px;
+  margin-right: 15px;
   border-radius: 6px;
   min-width: 190px;
   height: auto;
