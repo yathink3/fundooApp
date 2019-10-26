@@ -1,22 +1,16 @@
 .gridview {
   width: auto;
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
-  justify-content: space-around;
   max-width: 800px;
 
-}
-
-.listview {
-  width: auto;
-  justify-content: space-around;
-  max-width: 800px;
 }
 
 .gridnote {
   width: 200px;
   display: flex;
-  margin-top: 40px;
+  margin-top: 4vw;
   margin-left: 10px;
   margin-right: 10px;
   border-radius: 6px;
@@ -28,17 +22,12 @@
   flex-direction: column;
 }
 
-.mat-card:not([class*=mat-elevation-z]) {
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.1),
-    0 3px 14px 2px rgba(0, 0, 0, 0.1);
-}
 
 .listnote {
   display: flex;
-  margin-top: 40px;
-  margin-left: 15px;
-  margin-right: 15px;
+  margin-top: 4vw;
+  margin-left: 25px;
+  margin-right: 25px;
   border-radius: 6px;
   min-width: 190px;
   height: auto;
@@ -48,6 +37,15 @@
   flex-direction: column;
   max-width: 700px;
 }
+
+.mat-card:not([class*=mat-elevation-z]) {
+  // border: 1px solid grey;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.1),
+    0 3px 14px 2px rgba(0, 0, 0, 0.1);
+}
+
+
 
 .cdk-drag-preview {
   box-sizing: border-box;
@@ -90,6 +88,8 @@
 }
 
 .title {
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+  font-weight: 500;
   width: 200px;
   margin-top: 5px;
   margin-bottom: 0px;
@@ -97,20 +97,21 @@
   min-height: 34px;
   height: auto;
   width: auto;
-  font-size: 14px;
+  font-size: 17px;
   display: inline-block;
   word-break: break-word;
 
 }
 
 .contents {
-  font-size: 11px;
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+  font-weight: 500;
   margin-bottom: -8px;
   margin-top: 10px;
   border: none;
   width: 100%;
   height: auto;
-  font-size: 14px;
+  font-size: 15px;
   display: inline-block;
   word-break: break-word;
 
@@ -125,11 +126,6 @@
   align-items: center;
   flex-wrap: wrap;
   justify-content: space-between;
-}
-
-
-.colorbold {
-  border: 2px solid black;
 }
 
 mat-chip {

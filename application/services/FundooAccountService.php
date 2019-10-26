@@ -15,6 +15,7 @@ require APPPATH . 'rabbitmq/sender.php';
 require APPPATH . 'third_party/cloudinary/Cloudinary.php';
 require APPPATH . 'third_party/cloudinary/Uploader.php';
 require APPPATH . 'third_party/cloudinary/Api.php';
+require APPPATH . 'constants.php';
 class FundooAccountService extends CI_Controller
 {
 
@@ -25,6 +26,7 @@ class FundooAccountService extends CI_Controller
         $this->load->database();
         $this->load->library('email');
         $this->load->driver('cache', array('adapter' => 'redis', 'backup' => 'file'));
+        $this->constant = new Constants();
     }
 
     /**
@@ -61,11 +63,10 @@ class FundooAccountService extends CI_Controller
      */
     public function jwtToken($token, $method)
     {
-        $jwt_key = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHR';
-        if ($method)  return JWT::encode($token, $jwt_key);
+        if ($method)  return JWT::encode($token, $this->constant->jwt_key);
         else {
             try {
-                $data = JWT::decode($token, $jwt_key, true);
+                $data = JWT::decode($token, $this->constant->jwt_key, true);
                 return $data;
             } catch (Exception $e) {
                 return false;
@@ -128,7 +129,7 @@ class FundooAccountService extends CI_Controller
             $query = 'INSERT INTO user (firstname,lastname,email,password,acc_status,created,modified,profilepic) VALUES (:firstname,:lastname,:email,:password,:acc_status,:created,:modified,:profilepic)';
             if ($this->db->conn_id->prepare($query)->execute($userData)) {
                 if ($result = $this->isEmailPresent($userData['email'])) {
-                    return ['status' => 200, "message" => "User account has been created token generated && login successful", "data" => $result];
+                    return ['status' => 200, "message" => "User account has been created && login successful", "data" => $result];
                 }
             } else return ['status' => 503, "message" => "Some problems occurred, please try again later"];
         }
@@ -194,9 +195,9 @@ class FundooAccountService extends CI_Controller
     public function uploadProfilePic($profiledata)
     {
         \Cloudinary::config(array(
-            "cloud_name" => "dfifkw6w6",
-            "api_key" => "316584133517813",
-            "api_secret" => "KnSWIjCpyCJwpnL3YwxRXTEZAlA",
+            "cloud_name" => $this->constant->cloudinaryName,
+            "api_key" => $this->constant->cloudinaryApiKey,
+            "api_secret" => $this->constant->cloudinaryApiKeySecrete,
             "secure" => true
         ));
         $uploadurlData = \Cloudinary\Uploader::upload($profiledata['profilepic']);

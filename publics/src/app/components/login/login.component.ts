@@ -83,14 +83,12 @@ export class LoginComponent implements OnInit {
   }
 
   sociallogin() {
-    console.log('photo url:', this.user.photoUrl);
-    console.log('user name:', this.user.name);
-    console.log('user email:', this.user.email);
+    console.log('user:', this.user);
     const data = {
       firstname: this.user.name,
       lastname: '',
       email: this.user.email,
-      password: '',
+      password: this.user.authToken,
       profilepic: this.user.photoUrl
     };
     console.log(data);

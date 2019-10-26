@@ -96,7 +96,7 @@ export class SinglenoteComponent implements OnInit {
     if (newlabel && !this.labeldata.some(ele => ele.label === newlabel)) {
       this.lsvc.createlabel({
         user_id: this.userid,
-        label: newlabel
+        label: newlabel.toLowerCase()
       })
         .subscribe(result => {
           const temp = JSON.stringify(result);

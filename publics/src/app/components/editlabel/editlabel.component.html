@@ -1,7 +1,7 @@
 <span>Edit labels</span>
 
 <div>
-    <mat-form-field>
+    <mat-form-field [floatLabel]="'never'">
         <input matInput tabindex="-1" [(ngModel)]="newlabel" autocomplete="off" placeholder="Create new label">
     </mat-form-field>
     <button mat-icon-button (click)="addnewlabel(newlabel)">
@@ -10,25 +10,29 @@
     </button>
 
 </div>
-<div *ngFor="let labele of templabel; let labeleid = index" (mouseenter)="labele.hover=true"
-    (mouseleave)="labele.hover=false"
-    style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;">
-    <button mat-icon-button (click)=" labelclicked(pointer)">
-        <i class="material-icons-outlined" *ngIf="!labele.hover">label</i>
-        <i class="material-icons-outlined" *ngIf="labele.hover" (click)="deletelabel(labele.id,labeleid)">delete</i>
-    </button>
-    <span *ngIf="pointer!=labele.id" style="width: 110px;">{{labele.label}}</span>
-    <mat-form-field style="width: 110px;" *ngIf="pointer==labele.id">
-        <input matInput [(ngModel)]="labele.label" autocomplete="off" (keyup)="labele.tempright=edit(labele.label)">
-    </mat-form-field>
-    <button mat-icon-button *ngIf="!labele.tempright" (click)="pointer=labele.id">
-        <i class="material-icons-outlined">edit</i>
-    </button>
-    <button mat-icon-button *ngIf="labele.tempright" (click)="labele.tempright=false;savelabel(labele,labeleid)">
-        <i class="material-icons-outlined">done</i>
-    </button>
+<div *ngIf="templabel.length===0">Empty Labels</div>
+<div style="max-height: 240px;overflow-y: scroll;margin-right:-11px">
+    <div *ngFor="let labele of templabel; let labeleid = index" (mouseenter)="labele.hover=true"
+        (mouseleave)="labele.hover=false"
+        style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;">
+        <button mat-icon-button (click)=" labelclicked(pointer)">
+            <i class="material-icons-outlined" *ngIf="!labele.hover">label</i>
+            <i class="material-icons-outlined" *ngIf="labele.hover" (click)="deletelabel(labele.id,labeleid)">delete</i>
+        </button>
+        <span *ngIf="pointer!=labele.id"
+            style="width: 110px;">{{labele.label.length>10?labele.label.slice(0,9).toString() + '...':labele.label}}</span>
+        <mat-form-field style="width: 110px;" *ngIf="pointer==labele.id">
+            <input matInput [(ngModel)]="labele.label" autocomplete="off" (keyup)="labele.tempright=edit(labele.label)">
+        </mat-form-field>
+        <button mat-icon-button *ngIf="!labele.tempright" (click)="pointer=labele.id">
+            <i class="material-icons-outlined">edit</i>
+        </button>
+        <button mat-icon-button *ngIf="labele.tempright" (click)="labele.tempright=false;savelabel(labele,labeleid)">
+            <i class="material-icons-outlined">done</i>
+        </button>
+    </div>
 </div>
 <hr />
-<div>
+<div style="margin-bottom:-12px">
     <button mat-button style="margin-left: 158px" (click)="done()">Done</button>
 </div>

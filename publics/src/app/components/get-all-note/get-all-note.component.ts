@@ -20,13 +20,13 @@ const timeAgo = new TimeAgo('en-US');
 })
 export class GetAllNoteComponent implements OnInit {
   dialoguenote: MatDialogRef<SinglenoteComponent>;
+  @Input() pointer;
   @Input() isgrid: boolean;
   @Input() mobileQuery;
   @Input() labelsData;
   @Input() items;
   @Input() colorPalette;
   @Input() userData;
-  @Input() pointer;
   isMatMenuOpen = false;
   grid = true;
   newlabel = '';
@@ -47,7 +47,29 @@ export class GetAllNoteComponent implements OnInit {
     return timeAgo.format(new Date(reminder));
   }
   drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.items, event.previousIndex, event.currentIndex);
+    if (event.previousIndex !== event.currentIndex) {
+      moveItemInArray(this.items, event.previousIndex, event.currentIndex);
+      this.svc.dragAndDrop(
+        {
+          note1_id: this.items[event.previousIndex].id,
+          note1_dragid: this.items[event.previousIndex].drag_id,
+          note2_id: this.items[event.currentIndex].id,
+          note2_dragid: this.items[event.currentIndex].drag_id
+        })
+        .subscribe(result => {
+          const temp = JSON.stringify(result);
+          const results = JSON.parse(temp);
+          console.log(results.message, ':', results);
+          const temperory = this.items[event.previousIndex].drag_id;
+          this.items[event.previousIndex].drag_id = this.items[event.currentIndex].drag_id;
+          this.items[event.currentIndex].drag_id = temperory;
+        },
+          error => {
+            console.log(error.error.message, ':', error.error);
+          });
+
+    }
+
   }
 
   menuclicked() {
@@ -59,13 +81,12 @@ export class GetAllNoteComponent implements OnInit {
   savereminder() {
   }
   updatecolor(colorid, noteindex, noteid) {
-    this.items[noteindex].color_id = colorid;
     this.svc.updateNotecolor({ note_id: noteid, color_id: colorid })
       .subscribe(result => {
         const temp = JSON.stringify(result);
         const results = JSON.parse(temp);
         console.log(results.message, ':', results);
-
+        this.items[noteindex].color_id = colorid;
       },
         error => {
           console.log(error.error.message, ':', error.error);
@@ -73,36 +94,39 @@ export class GetAllNoteComponent implements OnInit {
   }
   updatereminder(date, noteindex, noteid) {
     date = date ? dateFormat(date, 'yyyy-mm-dd HH:MM:ss') : null;
-    this.items[noteindex].reminder = date;
     this.svc.updateNoteReminder({ note_id: noteid, reminder: date })
       .subscribe(result => {
         const temp = JSON.stringify(result);
         const results = JSON.parse(temp);
         console.log(results.message, ':', results);
+        this.items[noteindex].reminder = date;
       },
         error => {
           console.log(error.error.message, ':', error.error);
         });
   }
   removereminder(noteindex, noteid) {
-    this.items[noteindex].reminder = null;
     this.svc.updateNoteReminder({ note_id: noteid, reminder: null })
       .subscribe(result => {
         const temp = JSON.stringify(result);
         const results = JSON.parse(temp);
         console.log(results.message, ':', results);
+        this.items[noteindex].reminder = null;
+        if (this.pointer === 'Reminder') {
+          this.items.splice(noteindex, 1);
+        }
       },
         error => {
           console.log(error.error.message, ':', error.error);
         });
   }
   archievenote(noteindex, noteid) {
-    this.items.splice(noteindex, 1);
     this.svc.archievenote({ note_id: noteid, isArchieve: true })
       .subscribe(result => {
         const temp = JSON.stringify(result);
         const results = JSON.parse(temp);
         console.log(results.message, ':', results);
+        this.items.splice(noteindex, 1);
         this.snackBar.open(results.message, 'ok', {
           duration: 2000,
         });
@@ -112,12 +136,12 @@ export class GetAllNoteComponent implements OnInit {
         });
   }
   unarchievenote(noteindex, noteid) {
-    this.items.splice(noteindex, 1);
     this.svc.archievenote({ note_id: noteid, isArchieve: false })
       .subscribe(result => {
         const temp = JSON.stringify(result);
         const results = JSON.parse(temp);
         console.log(results.message, ':', results);
+        this.items.splice(noteindex, 1);
         this.snackBar.open('note unarchieved', 'ok', {
           duration: 2000,
         });
@@ -127,12 +151,12 @@ export class GetAllNoteComponent implements OnInit {
         });
   }
   addTrashnote(noteindex, noteid) {
-    this.items.splice(noteindex, 1);
     this.svc.addTrashnote({ note_id: noteid, isTrash: true })
       .subscribe(result => {
         const temp = JSON.stringify(result);
         const results = JSON.parse(temp);
         console.log(results.message, ':', results);
+        this.items.splice(noteindex, 1);
         this.snackBar.open(results.message, 'ok', {
           duration: 2000,
         });
@@ -143,12 +167,12 @@ export class GetAllNoteComponent implements OnInit {
   }
 
   restoreTrashnote(noteindex, noteid) {
-    this.items.splice(noteindex, 1);
     this.svc.addTrashnote({ note_id: noteid, isTrash: false })
       .subscribe(result => {
         const temp = JSON.stringify(result);
         const results = JSON.parse(temp);
         console.log(results.message, ':', results);
+        this.items.splice(noteindex, 1);
         this.snackBar.open('note restored', 'ok', {
           duration: 2000,
         });
@@ -158,12 +182,12 @@ export class GetAllNoteComponent implements OnInit {
         });
   }
   deleteNotePermanently(noteindex, noteid) {
-    this.items.splice(noteindex, 1);
     this.svc.deleteNotePermanently(noteid)
       .subscribe(result => {
         const temp = JSON.stringify(result);
         const results = JSON.parse(temp);
         console.log(results.message, ':', results);
+        this.items.splice(noteindex, 1);
         this.snackBar.open(results.message, 'ok', {
           duration: 2000,
         });
@@ -202,6 +226,9 @@ export class GetAllNoteComponent implements OnInit {
           console.log(results.message, ':', results);
           this.items[noteindex].labels.splice(this.items[noteindex].labels.indexOf(labele.label), 1);
           console.log('label removed');
+          if (this.pointer === labele.label) {
+            this.items.splice(noteindex, 1);
+          }
         },
           error => {
             console.log(error.error.message, ':', error.error);
@@ -209,7 +236,7 @@ export class GetAllNoteComponent implements OnInit {
     }
   }
 
-  removelabel(noteindex, noteid, templabelid) {
+  removelabel(noteindex, noteid, templabelid, labeltemp) {
     this.lsvc.removeNotelabel({
       note_id: noteid,
       label_id: this.labelsData.filter(ele => ele.label === this.items[noteindex].labels[templabelid])[0].id
@@ -220,6 +247,9 @@ export class GetAllNoteComponent implements OnInit {
         console.log(results.message, ':', results);
         this.items[noteindex].labels.splice(templabelid, 1);
         console.log('label removed');
+        if (this.pointer === labeltemp) {
+          this.items.splice(noteindex, 1);
+        }
       },
         error => {
           console.log(error.error.message, ':', error.error);
@@ -229,7 +259,7 @@ export class GetAllNoteComponent implements OnInit {
     if (this.newlabel && !this.labelsData.some(ele => ele.label === this.newlabel)) {
       this.lsvc.createlabel({
         user_id: this.userData.id,
-        label: this.newlabel
+        label: this.newlabel.toLowerCase()
       })
         .subscribe(result => {
           const temp = JSON.stringify(result);
@@ -244,6 +274,7 @@ export class GetAllNoteComponent implements OnInit {
 
   }
   openDialog(noteindex, itemdata) {
+    this.items[noteindex].hiden = true;
     const olddata = { title: itemdata.title, description: itemdata.description };
     this.dialoguenote = this.dialog.open(SinglenoteComponent, {
       panelClass: 'my-dialogue',
@@ -251,7 +282,8 @@ export class GetAllNoteComponent implements OnInit {
         itemdataa: itemdata,
         labeldataa: this.labelsData,
         colorPalettea: this.colorPalette,
-        userida: this.userData.id
+        userida: this.userData.id,
+        pointer: this.pointer
       }
     });
 
@@ -259,6 +291,16 @@ export class GetAllNoteComponent implements OnInit {
     this.dialoguenote
       .afterClosed()
       .subscribe(item => {
+        if (!['Fundoo', 'Archieve', 'Reminder', 'Bin'].includes(this.pointer)) {
+          if (!itemdata.labels.includes(this.pointer)) {
+            console.log('label removed');
+            this.items.splice(noteindex, 1);
+          }
+        }
+        if (this.pointer === 'Reminder' && !itemdata.reminder) {
+          console.log('removed');
+          this.items.splice(noteindex, 1);
+        }
         this.updatenotesdata(itemdata, olddata);
         if (item) {
           if (item.trash === true) {
@@ -277,6 +319,7 @@ export class GetAllNoteComponent implements OnInit {
             this.deleteNotePermanently(noteindex, itemdata.id);
           }
         }
+        this.items[noteindex].hiden = false;
       });
   }
   updatenotesdata(itemdata, olddata) {

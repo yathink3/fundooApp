@@ -159,4 +159,17 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    public function dragAndDrop()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $drag1 = array();
+        $drag1['noteid'] = $data->note1_id;
+        $drag1['dragid'] = $data->note2_dragid;
+        $drag2 = array();
+        $drag2['noteid'] = $data->note2_id;
+        $drag2['dragid'] = $data->note1_dragid;
+        $responce = $this->services->dragAndDrop($drag1, $drag2);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
 }

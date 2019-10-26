@@ -33,23 +33,23 @@ export class DashboardComponent implements OnDestroy, OnInit {
   emailid: string;
   profilepic: string;
   colorPalette = [
-    { name: 'default', colorCode: '#FDFEFE' },
-    { name: 'Red', colorCode: '#ef9a9a' },
+    { name: 'Default', colorCode: '#FDFEFE' },
+    { name: 'Red', colorCode: '#f28b82' },
     { name: 'Cyan', colorCode: '#80deea' },
     { name: 'Blue', colorCode: '#2196f3' },
     { name: 'Indigo', colorCode: '#9fa8da' },
+    { name: 'Orange', colorCode: '#fbbc04' },
     { name: 'LightBlue', colorCode: '#90caf9' },
     { name: 'Purple', colorCode: '#b39ddb' },
     { name: 'Yellow', colorCode: '#fff59d' },
-    { name: 'Lime', colorCode: '#e6ee9c' },
     { name: 'Pink', colorCode: ' #f48fb1' },
-    { name: 'gray', colorCode: '#eeeeee' },
+    { name: 'Gray', colorCode: '#eeeeee' },
     { name: 'Brown', colorCode: '#bcaaa4' },
   ];
   constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private snackBar: MatSnackBar, private usvc: UsersService,
     // tslint:disable-next-line: align
     private route: Router, private svc: NotesService, private lsvc: LabelsService, private dialog: MatDialog) {
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this.mobileQuery = media.matchMedia('(max-width: 550px)');
     this.mobileQueryListener = () => changeDetectorRef.detectChanges();
     // tslint:disable-next-line: deprecation
     this.mobileQuery.addListener(this.mobileQueryListener);
@@ -83,7 +83,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.getAllNotes();
     setTimeout(() => {
       this.items = this.notes.filter(ele => ele.isArchieve === '0').filter(ele => ele.isTrash === '0');
-      this.items.sort((a, b) => (b.isPin - a.isPin));
+      this.items.sort((a, b) => (b.drag_id - a.drag_id));
     }, 200);
   }
   reminderclicked() {
@@ -91,6 +91,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.getAllNotes();
     setTimeout(() => {
       this.items = this.notes.filter(ele => ele.isTrash === '0').filter(ele => ele.reminder);
+      this.items.sort((a, b) => (b.drag_id - a.drag_id));
     }, 200);
   }
   archieveclicked() {
@@ -98,6 +99,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.getAllNotes();
     setTimeout(() => {
       this.items = this.notes.filter(ele => ele.isArchieve === '1').filter(ele => ele.isTrash === '0');
+      this.items.sort((a, b) => (b.drag_id - a.drag_id));
     }, 200);
   }
   deleteclicked() {
@@ -105,11 +107,13 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.getAllNotes();
     setTimeout(() => {
       this.items = this.notes.filter(ele => ele.isTrash === '1');
+      this.items.sort((a, b) => (b.drag_id - a.drag_id));
     }, 200);
   }
   labelclicked(label) {
     this.notelabels = [label];
     this.items = this.notes.filter(ele => ele.labels.includes(label)).filter(ele => ele.isTrash === '0');
+    this.items.sort((a, b) => (b.drag_id - a.drag_id));
   }
   addaccont() {
     this.route.navigate(['/']);
@@ -150,23 +154,28 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
   searching(searchdata) {
     if (!(/^\s*$/.test(searchdata))) {
+      const re = new RegExp(searchdata, 'gi');
       setTimeout(() => {
-        this.items = this.notes.filter(ele => (ele.title.toLowerCase().match(searchdata.toLowerCase())
-          || ele.description.toLowerCase().match(searchdata.toLowerCase())));
+        this.items = this.notes.filter(ele => (ele.title.match(re) || ele.description.match(re)));
+        this.items.sort((a, b) => (b.drag_id - a.drag_id));
       }, 200);
     } else {
       this.searchclear();
     }
   }
-  searchclicked() {
-    this.temp = JSON.parse(JSON.stringify(this.items));
+  searchclicked(searchdata) {
+    if (!searchdata) {
+      this.temp = this.items;
+    }
   }
   searchclear() {
     setTimeout(() => {
       this.items = this.temp;
+      this.items.sort((a, b) => (b.drag_id - a.drag_id));
     }, 200);
   }
   editlabeldialogue() {
+    this.items = [];
     this.dialoguenote = this.dialog.open(EditlabelComponent, {
       data: { labelsdaata: this.labelsData, useraid: this.userData.id },
     });

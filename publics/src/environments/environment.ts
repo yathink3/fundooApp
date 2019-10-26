@@ -4,7 +4,9 @@
 
 export const environment = {
   apiUrl: 'http://192.168.1.127/',
-  production: false
+  googleApi: '636559597730-6fm0o7jslsjsbptgdsmag3trljeag6uv.apps.googleusercontent.com',
+  facebookApi: '2446314605580921',
+  production: true
 };
 
 /*

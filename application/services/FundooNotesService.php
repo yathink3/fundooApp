@@ -11,8 +11,12 @@
  *******************************************************************************************************************/
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-
+require APPPATH . 'third_party/aws/aws-autoloader.php';
 require APPPATH . 'rabbitmq/sender.php';
+require APPPATH . 'constants.php';
+
+use Aws\Sns\SnsClient;
+
 class FundooNotesService extends CI_Controller
 {
 
@@ -22,6 +26,7 @@ class FundooNotesService extends CI_Controller
         //load database library
         $this->load->database();
         $this->load->driver('cache', array('adapter' => 'redis', 'backup' => 'file'));
+        $this->constant = new Constants();
     }
 
     /**
@@ -31,11 +36,10 @@ class FundooNotesService extends CI_Controller
      */
     public function jwtToken($token, $method)
     {
-        $jwt_key = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHR';
-        if ($method)  return JWT::encode($token, $jwt_key);
+        if ($method)  return JWT::encode($token, $this->constant->jwt_key);
         else {
             try {
-                $data = JWT::decode($token, $jwt_key, true);
+                $data = JWT::decode($token, $this->constant->jwt_key, true);
                 return $data;
             } catch (Exception $e) {
                 return false;
@@ -52,9 +56,12 @@ class FundooNotesService extends CI_Controller
     public function createNote($notesData)
     {
         if (!array_key_exists('created', $notesData))  $notesData['created'] = date("Y-m-d H:i:s");
-        $query = 'INSERT INTO notes (user_id,title,description,reminder,color_id,isArchieve,isPin,created) VALUES (:userid,:title,:desc,:rem,:colorid,:isArchieve,:isPin,:created)';
+        $notesData['drag_id'] = null;
+        $query = 'INSERT INTO notes (user_id,title,description,reminder,color_id,isArchieve,isPin,created,drag_id) VALUES (:userid,:title,:desc,:rem,:colorid,:isArchieve,:isPin,:created,:drag_id)';
         if ($this->db->conn_id->prepare($query)->execute($notesData)) {
             $id = $this->db->conn_id->lastInsertId();
+            $stmt = $this->db->conn_id->prepare('UPDATE notes SET drag_id=:noteid WHERE id=:noteid');
+            $stmt->execute(['noteid' => $id]);
             return ['status' => 200, "message" => "Note Created succefully", "id" => $id];
         } else return ['status' => 503, "message" => "Some problems occurred, please try again."];
     }
@@ -160,9 +167,13 @@ class FundooNotesService extends CI_Controller
     public function updateNoteReminder($notesData)
     {
         $stmt = $this->db->conn_id->prepare('UPDATE notes SET reminder=:reminder  WHERE id=:noteid');
-        if ($stmt->execute($notesData))
+        if ($stmt->execute($notesData)) {
+            // $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE id=:id  ');
+            // $stmt->execute(['id' => $notesData['noteid']]);
+            // $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            // $this->SendAwsSms('title:' . $result['title'] . '\ndescription:' . $result['description']);
             return ['status' => 200, "message" => "reminder updated"];
-        else return ['status' => 503, "message" => "reminder not updated"];
+        } else return ['status' => 503, "message" => "reminder not updated"];
     }
 
     /**
@@ -189,5 +200,33 @@ class FundooNotesService extends CI_Controller
         if ($stmt->execute($notesData))
             return ['status' => 200, "message" => "note added to trash"];
         else return ['status' => 503, "message" => "note not added to trash"];
+    }
+    public function dragAndDrop($drag1, $drag2)
+    {
+        $stmt = $this->db->conn_id->prepare('UPDATE notes SET drag_id=:dragid  WHERE id=:noteid');
+        $dragged1 = $stmt->execute($drag1);
+        $stmt = $this->db->conn_id->prepare('UPDATE notes SET drag_id=:dragid  WHERE id=:noteid');
+        $dragged2 = $stmt->execute($drag2);
+        if ($dragged1 && $dragged2)
+            return ['status' => 200, "message" => "dragging success"];
+        else return ['status' => 503, "message" => "dragging error"];
+    }
+    public function SendAwsSms($msg)
+    {
+        $params = array(
+            'credentials' => array(
+                'key' => $this->constant->awskey,
+                'secret' => $this->constant->awsSecrete,
+            ),
+            'region' => 'us-east-2',
+            'version' => 'latest',
+            'scheme' => 'http'
+        );
+        $sns = new SnsClient($params);
+        $args = array(
+            "Message" => $msg,
+            "TopicArn" => $this->constant->awsARN
+        );
+        $result = $sns->publish($args);
     }
 }

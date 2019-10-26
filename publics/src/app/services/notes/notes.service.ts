@@ -35,4 +35,7 @@ export class NotesService {
   deleteNotePermanently(noteid) {
     return this.http.get(this.URL + 'deleteNotePermanently/' + noteid);
   }
+  dragAndDrop(data) {
+    return this.http.post(this.URL + 'dragAndDrop', data);
+  }
 }

@@ -71,7 +71,7 @@ $route['note/updateNoteReminder'] = 'FundooNotes/updateNoteReminder';
 $route['note/archievenote'] = 'FundooNotes/archievenoteSet';
 $route['note/addTrashnote'] = 'FundooNotes/addTrashnote';
 $route['note/deleteNotePermanently/(:any)'] = 'FundooNotes/deleteNotePermanently/$1';
-
+$route['note/dragAndDrop'] = 'FundooNotes/dragAndDrop';
 
 $route['label/createlabel'] = 'FundooLabels/createLabel';
 $route['label/getAllLabels/(:any)'] = 'FundooLabels/getAllLabels/$1';

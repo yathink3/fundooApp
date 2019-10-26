@@ -51,18 +51,18 @@
             aria-label="Toggle menu" (click)="menuclicked1()" (menuClosed)="menuClosed1()">
             <i class="material-icons-outlined">add_alert</i>
         </button>
+
         <mat-menu #remine="matMenu">
             <span style="margin-left:20px">Reminder</span>
-            <span style="margin-left:100%"></span>
-            <div mat-menu-item>
-                <mat-icon>alarm_add</mat-icon>
-                <mat-form-field class="demo-full-width">
+            <div mat-menu-item style="width:152px" (click)="stopPropagation($event)">
+                <mat-form-field class="demo-full-width" [floatLabel]="'never'">
+                    <mat-icon matPrefix style="margin-right:2px">alarm_add</mat-icon>
                     <input matInput [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="tx_date"
                         autocomplete="off" placeholder="Choose date and time">
                     <owl-date-time #dt1></owl-date-time>
                 </mat-form-field>
             </div>
-            <button style="margin-left:185px" mat-button (click)="savereminder(tx_date)">save</button>
+            <button style="margin-left:133px;margin-top:-7px" mat-button (click)="savereminder(tx_date)">save</button>
         </mat-menu>
         <button mat-icon-button matTooltip="colloborate">
             <i class="material-icons-outlined">person_add</i>
@@ -97,19 +97,23 @@
         </button>
         <mat-menu #labels="matMenu">
             <div mat-menu-item (click)="stopPropagation($event)">
-                <mat-form-field style="width:120px">
+                <mat-form-field style="width:120px" [floatLabel]="'never'">
                     <input matInput [(ngModel)]="newlabel" autocomplete="off" placeholder="Choose label">
                 </mat-form-field>
                 <mat-icon style="margin-right:-8px" matTooltip="create label" (click)="addnewlabel(newlabel)">
                     done_outline</mat-icon>
             </div>
-            <div *ngFor="let labele of labelsData; let labeleid = index">
-                <div mat-menu-item (click)="stopPropagation($event)">
+            <div style="max-height: 182px;overflow-y: scroll;">
+                <span style="margin-left: 20px;" *ngIf="labelsData.length===0">Empty Labels</span>
+                <div mat-menu-item *ngFor="let labele of labelsData; let labeleid = index"
+                    (click)="stopPropagation($event)">
                     <mat-checkbox color="primary" #checkbox [ngModel]="notelabels.includes(labele.label)"
-                        (change)='addlabel(labele,checkbox.checked)'>{{labele.label}}
+                        (change)='addlabel(labele,checkbox.checked)'>
+                        {{labele.label.length>15?labele.label.slice(0,13).toString() + '...':labele.label}}
                     </mat-checkbox>
                 </div>
             </div>
+            <button mat-button style="margin-left: auto;display: flex;" mat-button>Done</button>
         </mat-menu>
 
         <button mat-button style="margin-left: auto;" (click)="closetime()">close</button>

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CustomMaterialModule } from './material.module';
@@ -28,11 +28,11 @@ import { EditlabelComponent } from './components/editlabel/editlabel.component';
 const config = new AuthServiceConfig([
   {
     id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider('636559597730-6fm0o7jslsjsbptgdsmag3trljeag6uv.apps.googleusercontent.com')
+    provider: new GoogleLoginProvider(environment.googleApi)
   },
   {
     id: FacebookLoginProvider.PROVIDER_ID,
-    provider: new FacebookLoginProvider('536509143751633')
+    provider: new FacebookLoginProvider(environment.facebookApi)
   }
 ]);
 

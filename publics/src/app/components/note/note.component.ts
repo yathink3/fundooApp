@@ -8,6 +8,7 @@ import { LabelsService } from 'src/app/services/labels/labels.service';
 const dateFormat = require('dateformat');
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
+import { debug } from 'util';
 TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo('en-US');
 @Component({
@@ -18,6 +19,8 @@ const timeAgo = new TimeAgo('en-US');
 })
 export class NoteComponent implements OnInit {
   @Input() notes;
+  @Input() pointer;
+  @Input() items;
   @Input() labelsData;
   @Input() colorPalette;
   @Input() userData;
@@ -28,13 +31,13 @@ export class NoteComponent implements OnInit {
   desc: string = '';
   colorid = 0;
   labelid = 0;
+  tempnotelabels = [];
   isPin = false;
   rem: string = null;
   ismenuopened = true;
   data = JSON.parse(localStorage.getItem('userData'));
   constructor(private svc: NotesService, private lsvc: LabelsService, private route: Router,
     private getnotes: GetAllNoteComponent, private snackBar: MatSnackBar) {
-
   }
   ngOnInit() {
   }
@@ -134,15 +137,19 @@ export class NoteComponent implements OnInit {
     }
   }
 
-  getOnenote(noteid, isarchieve) {
+  getOnenote(noteid) {
     this.svc.getOneNote(noteid).subscribe(result => {
       const temp = JSON.stringify(result);
       const results = JSON.parse(temp);
       console.log(results.message, ':', results);
-      if (!isarchieve) {
-        this.notes.unshift(results.data);
+      this.notes.unshift(results.data);
+      if (results.data.labels.includes(this.pointer)) {
+        this.items.unshift(results.data);
+      } else if (this.pointer === 'Fundoo') {
+        this.items.unshift(results.data);
+      } else if (this.pointer === 'Reminder' && results.data.reminder) {
+        this.items.unshift(results.data);
       }
-      this.notelabels = [];
     },
       error => {
         console.log(error.error.message, ':', error.error);
@@ -150,7 +157,7 @@ export class NoteComponent implements OnInit {
 
   }
   addlabelstonotes(noteid) {
-    this.notelabels.forEach(label => {
+    this.tempnotelabels.forEach(label => {
       this.lsvc.addNoteLabel({
         note_id: noteid,
         label_id: this.labelsData.filter(el => el.label === label)[0].id
@@ -182,6 +189,12 @@ export class NoteComponent implements OnInit {
     this.rem = null;
     this.colorid = 0;
     this.isPin = false;
+    this.tempnotelabels = this.notelabels;
+    if (this.labelsData.some(ele => ele.label === this.pointer)) {
+      this.notelabels = [this.pointer];
+    } else {
+      this.notelabels = [];
+    }
     if (!(/^\s*$/.test(datas.title)) || !(/^\s*$/.test(datas.desc))) {
       console.log(datas);
       this.svc.createnote(datas)
@@ -191,7 +204,7 @@ export class NoteComponent implements OnInit {
           console.log(results.message, ':', results);
           this.addlabelstonotes(results.id);
           setTimeout(() => {
-            this.getOnenote(results.id, isarchieve);
+            this.getOnenote(results.id);
           }, 500);
         },
           error => {
