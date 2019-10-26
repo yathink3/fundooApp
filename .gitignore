@@ -8,9 +8,9 @@ application/logs/*
 
 !application/*/.htaccess
 
-application/*/constants.php
+!application/*/constants.php
 
-publics/src/environments
+!publics/src/environments
 
 composer.lock
 
