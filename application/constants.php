@@ -1,6 +1,7 @@
 <?php
 class Constants
 {
+    public $frontendUrl = "http://localhost:4200/";
     public $jwt_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHR";
     public $awskey = "AKIAJSBZV6PRA3GORS6A";
     public $awsSecrete = "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";

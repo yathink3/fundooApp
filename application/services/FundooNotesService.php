@@ -75,12 +75,17 @@ class FundooNotesService extends CI_Controller
 
     public function getAllNotes($userid)
     {
-        $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE user_id=:userid  ORDER BY created DESC');
+        $stmt = $this->db->conn_id->prepare("(SELECT * FROM notes WHERE user_id=:userid)
+        UNION
+        (SELECT n.* FROM notes n
+        INNER JOIN colloborators c ON n.id=c.note_id
+        WHERE c.others_id=:userid)");
         $stmt->execute(['userid' => $userid]);
         if ($result = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
             $tempresults = $result;
             foreach ($result as $key => $element) {
-                $tempresults[$key]['labels'] = $this->fetchlabel($tempresults[$key]['id']);
+                $tempresults[$key]['labels'] = $this->fetchlabel($tempresults[$key]['id'], $userid);
+                $tempresults[$key]['colloboraters'] = $this->fetchcolloboraters($tempresults[$key]['id']);
             }
             return ['status' => 200, "message" => "notes data", "data" => $tempresults];
         } else return ['status' => 503, "message" => "got error when fetching data"];
@@ -91,12 +96,13 @@ class FundooNotesService extends CI_Controller
      * @method:getOneNote($id)
      * @return :response
      */
-    public function getOneNote($id)
+    public function getOneNote($noteid)
     {
         $stmt = $this->db->conn_id->prepare('SELECT * FROM notes WHERE id=:id  ');
-        $stmt->execute(['id' => $id]);
+        $stmt->execute(['id' => $noteid]);
         if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result['labels'] = $this->fetchlabel($id);
+            $result['labels'] = $this->fetchlabel($noteid, $result['user_id']);
+            $result['colloboraters'] = $this->fetchcolloboraters($noteid);
             return ['status' => 200, "message" => "Note sent successfully", "data" => $result];
         } else return ['status' => 503, "message" => "got error when fetching data"];
     }
@@ -119,20 +125,40 @@ class FundooNotesService extends CI_Controller
      * @method:fetchlabel($noteid)
      * @return :response
      */
-    public function fetchlabel($noteid)
+    public function fetchlabel($noteid, $userid)
     {
         $stmt = $this->db->conn_id->prepare('SELECT u.label
         FROM noteslabels n
         INNER JOIN userlabels u ON n.label_id=u.id
-        WHERE n.note_id=' . $noteid . '
+        WHERE n.note_id=' . $noteid . ' AND u.user_id=' . $userid . '
         ORDER BY n.created DESC');
         $stmt->execute();
+        if ($result = $stmt->fetchAll(PDO::FETCH_ASSOC))
+            return array_map(function ($el) {
+                return $el['label'];
+            }, $result);
+        else return [];
+    }
+    /**
+     * @param: $noteid
+     * @method:fetchcolloborate($noteid)
+     * @return :response
+     */
+    public function fetchcolloboraters($noteid)
+    {
+        $stmt = $this->db->conn_id->prepare('(SELECT u.id,u.id AS owner_id,u.email,CONCAT_WS(\' \', u.firstname, u.lastname) AS name,u.profilepic
+        FROM user u
+        INNER JOIN notes n ON n.user_id=u.id
+        WHERE n.id=' . $noteid . ')
+        UNION
+        (SELECT u.id,Null as owner_id, u.email,CONCAT_WS(\' \', u.firstname, u.lastname) AS name,u.profilepic
+        FROM user u
+        INNER JOIN colloborators c ON c.others_id=u.id
+        WHERE c.note_id=' . $noteid . '
+        ORDER BY c.created DESC)');
+        $stmt->execute();
         if ($result = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-            $temp = array();
-            foreach ($result as $el) {
-                array_push($temp, $el['label']);
-            }
-            return $temp;
+            return $result;
         } else return [];
     }
     /**
@@ -175,7 +201,18 @@ class FundooNotesService extends CI_Controller
             return ['status' => 200, "message" => "reminder updated"];
         } else return ['status' => 503, "message" => "reminder not updated"];
     }
-
+    /**
+     * @param: $notesData
+     * @method:pinningNote($notesData)
+     * @return :response
+     */
+    public function pinningNote($notesData)
+    {
+        $stmt = $this->db->conn_id->prepare('UPDATE notes SET isPin=:isPin  WHERE id=:noteid');
+        if ($stmt->execute($notesData)) {
+            return ['status' => 200, "message" => "pinning updated"];
+        } else return ['status' => 503, "message" => "pinning not updated"];
+    }
     /**
      * @param: $notesData
      * @method:archievenoteSet($notesData)

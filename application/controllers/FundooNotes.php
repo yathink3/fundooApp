@@ -127,6 +127,21 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:pinningNote()
+     * @return :response 
+     */
+    public function pinningNote()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $notesData = array();
+        $notesData['noteid'] = $data->note_id;
+        $notesData['isPin'] = $data->isPin;
+        $responce = $this->services->pinningNote($notesData);
+        http_response_code($responce['status']);
+        echo json_encode($responce);
+    }
 
     /**
      * @param:null
@@ -159,6 +174,11 @@ class FundooNotes
         http_response_code($responce['status']);
         echo json_encode($responce);
     }
+    /**
+     * @param:null
+     * @method:dragAndDrop()
+     * @return :response 
+     */
     public function dragAndDrop()
     {
         $data = json_decode(file_get_contents("php://input"));

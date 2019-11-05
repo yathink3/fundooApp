@@ -51,8 +51,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 
-$route['default_controller'] = 'Welcome';
 
+
+$route['default_controller'] = 'Welcome';
 
 $route['user/login'] = 'FundooAccounts/login';
 $route['user/registration'] = 'FundooAccounts/registration';
@@ -61,6 +62,7 @@ $route['user/forgot'] = 'FundooAccounts/forgot';
 $route['user/forgotPassword/(:any)'] = 'FundooAccounts/reset/$1';
 $route['user/sociallogin'] = 'FundooAccounts/sociallogin';
 $route['user/uploadProfilePic'] = 'FundooAccounts/uploadProfilePic';
+$route['user/getUsers'] = 'FundooAccounts/getUsers';
 
 $route['note/createnote'] = 'FundooNotes/createNote';
 $route['note/getAllNotes/(:any)'] = 'FundooNotes/getAllNotes/$1';
@@ -68,6 +70,7 @@ $route['note/getOneNote/(:any)'] = 'FundooNotes/getOneNote/$1';
 $route['note/updateNotes'] = 'FundooNotes/updateNotes';
 $route['note/updateNotecolor'] = 'FundooNotes/updateNotecolor';
 $route['note/updateNoteReminder'] = 'FundooNotes/updateNoteReminder';
+$route['note/pinningNote'] = 'FundooNotes/pinningNote';
 $route['note/archievenote'] = 'FundooNotes/archievenoteSet';
 $route['note/addTrashnote'] = 'FundooNotes/addTrashnote';
 $route['note/deleteNotePermanently/(:any)'] = 'FundooNotes/deleteNotePermanently/$1';
@@ -79,3 +82,7 @@ $route['label/updatelabel'] = 'FundooLabels/updatelabel';
 $route['label/addNoteLabel'] = 'FundooLabels/addNoteLabel';
 $route['label/removeNoteLabel'] = 'FundooLabels/removeNoteLabel';
 $route['label/deletelabel/(:any)'] = 'FundooLabels/deletelabel/$1';
+
+$route['colloborate/getUsers'] = 'FundooColloborate/getUsers';
+$route['colloborate/addcolloborator'] = 'FundooColloborate/addcolloborator';
+$route['colloborate/deletecolloborate'] = 'FundooColloborate/deletecolloborate';

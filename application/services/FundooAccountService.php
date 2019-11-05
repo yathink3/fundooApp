@@ -104,7 +104,7 @@ class FundooAccountService extends CI_Controller
             $userData['password'] = md5($userData['password']);
             if (!array_key_exists('created', $userData))  $userData['created'] = date("Y-m-d H:i:s");
             if (!array_key_exists('modified', $userData))  $userData['modified'] = date("Y-m-d H:i:s");
-            if ($this->sendMail($userData['email'], 'for validating email', 'please click below link to validating your account', 'http://localhost:4200/validate/?token=' . $this->jwtToken($userData['email'], true))) {
+            if ($this->sendMail($userData['email'], 'for validating email', 'please click below link to validating your account', $this->constant->frontendUrl . 'validate/?token=' . $this->jwtToken($userData['email'], true))) {
                 $query = 'INSERT INTO user (firstname,lastname,email,password,created,modified) VALUES (:firstname,:lastname,:email,:password,:created,:modified)';
                 if ($this->db->conn_id->prepare($query)->execute($userData))
                     return ['status' => 200, "message" => "User account has been created token generated && email sent successfully."];
